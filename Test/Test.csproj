@@ -3,6 +3,8 @@
     <LangVersion>11</LangVersion>
     <TargetFramework>net472</TargetFramework>
     <MergeHKMirror>true</MergeHKMirror>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <ProjectFile>$(MSBuildProjectFile)</ProjectFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,10 +17,23 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>E:\SteamLibrary\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HKBuildUtils" Version="*" />
+
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <ModResource Include="Test0.txt" Unpack="true"></ModResource>
+    <ModResource Include="Test1.txt"></ModResource>
+    <ModResource Include="Test2.txt" Unpack="true"></ModResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HKBuildUtils" Version="*">
+      <ExcludeAssets>runtimes;compile</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

@@ -3,23 +3,34 @@
   <PropertyGroup>
     <LangVersion>11</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.41</Version>
+    <Version>0.0.57</Version>
     <IsPackable>true</IsPackable>
-    <Title>HollowKnightModdingBuildUtils</Title>
+    <Title>Hollow Knight Modding Build Utils</Title>
     <Authors>HKLab</Authors>
     <Nullable>enable</Nullable>
     <GenerateDependencyFile>true</GenerateDependencyFile>
+    <PackageTags>Hollow Knight;Hollow Knight Mod;HKMirror</PackageTags>
     <TargetsForTfmSpecificBuildOutput>
       $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage;_AddAnalyzersToOutput
     </TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <NoWarn>NU5100</NoWarn>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.4.0" ExcludeAssets="Runtime" />
 
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" ExcludeAssets="Runtime">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" ExcludeAssets="Runtime" />
+    
     <Reference Include="Mono.Cecil">
       <HintPath>../libs/Mono.Cecil/Mono.Cecil.dll</HintPath>
       <Private>true</Private>
@@ -53,7 +64,7 @@
 
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.CodeGen.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
   
@@ -66,7 +77,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\HKBuildUtils.CodeGen\HKBuildUtils.CodeGen.csproj">
-    </ProjectReference>
+    <Folder Include="template\" />
   </ItemGroup>
 </Project>

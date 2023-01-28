@@ -6,6 +6,9 @@
    </PropertyGroup>
 
    <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask" AssemblyFile="$(_HKBuildUtils_TaskAssembly)"/>
-   
+
+   <ItemGroup>
+     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ModResourcesItemGroup"/>
+   </ItemGroup>
 
  </Project>

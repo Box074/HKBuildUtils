@@ -3,4 +3,13 @@
 	<Target Name="MergeHKMirror" AfterTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
 		<MergeHKMirrorTask ModOutput="$(TargetPath)"></MergeHKMirrorTask>
 	</Target>
+
+  <ItemGroup>
+    <AdditionalFiles Include="@(ModResource)"
+                     ModResourcesItemGroup="embedded"></AdditionalFiles>
+    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Unpack', 'true'))"></AdditionalFiles>
+    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Unpack', 'true'))"
+                     ModResourcesItemGroup="unpack"></AdditionalFiles>
+    <EmbeddedResource Include="@(ModResource)"></EmbeddedResource>
+  </ItemGroup>
 </Project>

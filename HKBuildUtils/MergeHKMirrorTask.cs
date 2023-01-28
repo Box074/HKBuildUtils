@@ -1,4 +1,4 @@
-﻿using ILRepacking;
+using ILRepacking;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
@@ -173,7 +173,7 @@ namespace HKBuildUtils
                             }
                             var unusedPart = v.Body.Instructions
                                 .Where(x => x.OpCode == OpCodes.Ldsfld && x.Operand is FieldDefinition)
-                                .Select(x => (x, (FieldDefinition)x.Operand))
+                                .Select(x => (Item1: x, (FieldDefinition)x.Operand))
                                 .Where(x => x.Item2.DeclaringType == handler && x.Item2.Name.StartsWith("_"))
                                 .Where(x => !keepTypes.Contains(x.Item2.FieldType.FullName))
                                 .FirstOrDefault(x => 

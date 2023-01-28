@@ -11,7 +11,7 @@ namespace Test
     {
         public static void Test()
         {
-            ModResources._____1 = 1;
+            var a = ModResources.TEST2;
             HeroController.instance.Reflect().hitsSinceShielded = 1;
 
             HKMirror.Hooks.OnHooks.OnHeroController.AfterOrig.Awake += (self) => {
