@@ -42,7 +42,7 @@ namespace HKBuildUtils.CodeGen.Resources
                 }}
                 private static byte[] GetResourceBytes(string name)
                 {{
-                    string path = Path.Combine(typeof(ModResources).Assembly.Location, name);
+                    string path = Path.Combine(Path.GetDirectoryName(typeof(ModResources).Assembly.Location), name);
                     if(File.Exists(path)) return File.ReadAllBytes(path);
                     byte[] data = GetResourceBytesImpl(name.Replace('/', '.'));
                     Directory.CreateDirectory(Path.GetDirectoryName(path));

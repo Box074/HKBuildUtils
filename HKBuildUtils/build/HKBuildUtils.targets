@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="MergeHKMirror" AfterTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
+
+	<Target Name="MergeHKMirror" BeforeTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
 		<MergeHKMirrorTask ModOutput="$(TargetPath)"></MergeHKMirrorTask>
 	</Target>
 
