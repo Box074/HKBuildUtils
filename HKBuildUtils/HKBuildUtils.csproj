@@ -3,12 +3,15 @@
   <PropertyGroup>
     <LangVersion>11</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.57</Version>
+    <Version>0.1.1</Version>
     <IsPackable>true</IsPackable>
     <Title>Hollow Knight Modding Build Utils</Title>
     <Authors>HKLab</Authors>
     <Nullable>enable</Nullable>
     <GenerateDependencyFile>true</GenerateDependencyFile>
+    <Description>
+      A nuget package to help make the Hollow Knight Mod
+    </Description>
     <PackageTags>Hollow Knight;Hollow Knight Mod;HKMirror</PackageTags>
     <TargetsForTfmSpecificBuildOutput>
       $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage;_AddAnalyzersToOutput

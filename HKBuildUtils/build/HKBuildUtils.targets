@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Target Name="MergeHKMirror" AfterTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
 		<MergeHKMirrorTask ModOutput="$(TargetPath)"></MergeHKMirrorTask>
@@ -7,8 +7,8 @@
   <ItemGroup>
     <AdditionalFiles Include="@(ModResource)"
                      ModResourcesItemGroup="embedded"></AdditionalFiles>
-    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Unpack', 'true'))"></AdditionalFiles>
-    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Unpack', 'true'))"
+    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Default', 'true'))"></AdditionalFiles>
+    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Default', 'true'))"
                      ModResourcesItemGroup="unpack"></AdditionalFiles>
     <EmbeddedResource Include="@(ModResource)"></EmbeddedResource>
   </ItemGroup>
