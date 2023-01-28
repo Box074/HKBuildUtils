@@ -22,6 +22,8 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/HKLab/HKBuildUtils</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -76,6 +78,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="I:\CSProject\HKBuildUtils\HKBuildUtils\.editorconfig" />
   </ItemGroup>
   
