@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>11</LangVersion>
+    <TargetFramework>net472</TargetFramework>
+    <MergeHKMirror>true</MergeHKMirror>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\SteamLibrary\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HKMirror">
+      <HintPath>E:\SteamLibrary\steamapps\common\Hollow Knight\hkmm-mods\HKMirror\2.1.0.0\HKMirror.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HKBuildUtils" Version="*" />
+  </ItemGroup>
+  
+</Project>
