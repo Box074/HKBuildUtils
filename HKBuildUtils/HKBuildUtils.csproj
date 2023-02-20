@@ -3,40 +3,21 @@
   <PropertyGroup>
     <LangVersion>11</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.1.4</Version>
-    <IsPackable>true</IsPackable>
-    <Title>Hollow Knight Modding Build Utils</Title>
-    <Authors>HKLab</Authors>
     <Nullable>enable</Nullable>
-    <GenerateDependencyFile>true</GenerateDependencyFile>
-    <Description>
-      A nuget package to help make the Hollow Knight Mod
-    </Description>
-    <PackageTags>Hollow Knight;Hollow Knight Mod;HKMirror</PackageTags>
-    <TargetsForTfmSpecificBuildOutput>
-      $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage;_AddAnalyzersToOutput
-    </TargetsForTfmSpecificBuildOutput>
-    <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <NoWarn>NU5100</NoWarn>
+    <AssemblyName>HKBuildUtils.Main</AssemblyName>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/HKLab/HKBuildUtils</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.4.0" ExcludeAssets="Runtime" developmentDependency="true"/>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.4.0" ExcludeAssets="Runtime" developmentDependency="true" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" ExcludeAssets="Runtime" developmentDependency="true">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" ExcludeAssets="Runtime"  developmentDependency="true"/>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" ExcludeAssets="Runtime"  developmentDependency="true"/>
-    
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" ExcludeAssets="Runtime" developmentDependency="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" ExcludeAssets="Runtime" developmentDependency="true" />
+
     <Reference Include="Mono.Cecil">
       <HintPath>../libs/Mono.Cecil/Mono.Cecil.dll</HintPath>
       <Private>true</Private>
@@ -47,7 +28,7 @@
     </Reference>
     <Reference Include="ILRepack">
       <Private>true</Private>
-      <HintPath>../libs/ILRepack.exe</HintPath>
+      <HintPath>../libs/ILRepack.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -61,32 +42,19 @@
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)" TargetPath="%(ReferenceCopyLocalPaths.DestinationSubPath)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="AddBuildDependencyFileToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup" Condition=" '$(GenerateDependencyFile)' == 'true'">
     <ItemGroup>
       <BuiltProjectOutputGroupOutput Include="$(ProjectDepsFilePath)" TargetPath="$(ProjectDepsFileName)" FinalOutputPath="$(ProjectDepsFilePath)" />
     </ItemGroup>
   </Target>
 
-  <Target Name="_AddAnalyzersToOutput">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.dll" PackagePath="analyzers/dotnet/cs" />
-    </ItemGroup>
-  </Target>
-  
   <ItemGroup>
-    <EditorConfigFiles Remove="I:\CSProject\HKBuildUtils\HKBuildUtils\.editorconfig" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
     <None Include="I:\CSProject\HKBuildUtils\HKBuildUtils\.editorconfig" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Folder Include="template\" />
+    <Folder Include="UnityHelper\" />
   </ItemGroup>
 </Project>

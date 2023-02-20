@@ -22,6 +22,11 @@ namespace HKBuildUtils
             var hkmp = string.IsNullOrEmpty(HKMirrorPath) ? Path.Combine(
                 root, "HKMirror.dll"
                 ) : HKMirrorPath;
+            if (!File.Exists(hkmp))
+            {
+                Log.LogWarning("HKMirror.dll not found.If you are not using it, please remove '<MergeHKMirror>true</MergeHKMirror>'.");
+                return true;
+            }
             var hkmOP = Path.Combine(root, "HKMirror.modified.dll");
             var ar = new DefaultAssemblyResolver();
             ar.AddSearchDirectory(Path.GetDirectoryName(ModOutput));

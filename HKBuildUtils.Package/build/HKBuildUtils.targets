@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="$(DisableOverwriteHollowKnightRefs) != true">
+    <!--Overwrite HollowKnightRefs-->
+    <HKBU_HKPath_Path>$([MSBuild]::GetPathOfFileAbove('hkpath.txt', '$(ProjectDir)'))</HKBU_HKPath_Path>
+    <HKBU_HKPath_Path Condition="$(HKBU_HKPath_Path) == ''">$([MSBuild]::GetPathOfFileAbove('HollowKnightRefs.txt', '$(ProjectDir)'))</HKBU_HKPath_Path>
+    <HollowKnightRefs Condition="$(HKBU_HKPath_Path) != ''">$([System.IO.File]::ReadAllText('$(HKBU_HKPath_Path)'))</HollowKnightRefs>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <HKBU_UseLocalMod
+        Condition="$(DisableLocalMods) == true">false</HKBU_UseLocalMod>
+    <HKBU_HollowKnightCheckFile>$(HollowKnightRefs)\Assembly-CSharp.dll</HKBU_HollowKnightCheckFile>
+    <HKBU_UseLocalMod
+      Condition="$(HollowKnightRefs) != '' and $([System.IO.File]::Exists($(HKBU_HollowKnightCheckFile))) and $(DisableLocalMods) != true">true</HKBU_UseLocalMod>
+
+    <HKBU_LibraryModCache
+        Condition="$(HKBU_UseLocalMod) != true">$(ProjectDir)\~ModLibrary\</HKBU_LibraryModCache>
+    <HKBU_LibraryModCache
+        Condition="$(HKBU_UseLocalMod) == true">$(HollowKnightRefs)\Mods\</HKBU_LibraryModCache>
+
+    <HKBU_MAPICache
+        Condition="$(HKBU_UseLocalMod) != true">$(ProjectDir)\~ModLibrary\ModdingAPI</HKBU_MAPICache>
+    <HKBU_MAPICache
+        Condition="$(HKBU_UseLocalMod) == true">$(HollowKnightRefs)</HKBU_MAPICache>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HKBU_LibraryReferences_HAS_AssemblyName  Include="@(ModReference->HasMetadata('AssemblyName'))" />
+    <HKBU_LibraryReferences Include="@(HKBU_LibraryReferences_HAS_AssemblyName -> '$(HKBU_LibraryModCache)/%(Identity)/%(AssemblyName).dll')"
+                            />
+
+    <HKBU_LibraryReferences Include="@(ModReference-> '$(HKBU_LibraryModCache)/%(Identity)/%(Identity).dll')"/>
+
+
+
+    <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
+
+    <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
+
+    <Reference Include="@(HKBU_MAPIFiles)"/>
+
+    <None Remove="$(HKBU_LibraryModCache)/**"></None>
+  </ItemGroup>
+
+  <Target Name="MergeHKMirror" AfterTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
+    <MergeHKMirrorTask ModOutput="$(TargetPath)"></MergeHKMirrorTask>
+  </Target>
+
+  <Target Name="ResolveModDependencies" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <HKBU_RequireMods Include="@(ModReference->Distinct())" />
+    </ItemGroup>
+    <Message Importance="high"
+             Text="Reference: @(HKBU_LibraryReferences)"></Message>
+    <Message Importance="high"
+             Text="Require Mods: @(HKBU_RequireMods)"></Message>
+
+    <ResovleModDependenciesTask LibraryCache="$(HKBU_LibraryModCache)"
+                                ModNames="@(HKBU_RequireMods, ';')"
+                                Condition="$(HKBU_UseLocalMod) != true">
+    </ResovleModDependenciesTask>
+
+    <Message Condition="$(HKBU_UseLocalMod) == true"
+             Text="Use the local Mods folder: $(HKBU_LibraryModCache)"
+             Importance="high"></Message>
+  </Target>
+  <Target Name="ResolveModdingAPI" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <HKBU_SkipSetupModdingAPI Condition="Exists('$(HKBU_MAPICache)/Assembly-CSharp.dll')">true</HKBU_SkipSetupModdingAPI>
+    </PropertyGroup>
+    <SetupModdingAPITask LibraryCache="$(HKBU_MAPICache)"
+                         VanillaURL="$(VanillaURL)"
+                                Condition="$(HKBU_UseLocalMod) != true and $(HKBU_SkipSetupModdingAPI) != true"
+                         >
+    </SetupModdingAPITask>
+    <Message Text="Skip download Modding API"
+             Importance="high"
+             Condition="$(HKBU_SkipSetupModdingAPI) == true"></Message>
+    <Message
+             Text="Use the modding api folder: $(HKBU_MAPICache)"
+             Importance="high"></Message>
+  </Target>
+
+  <ItemGroup>
+    <AdditionalFiles Include="@(ModResource)"
+                     ModResourcesItemGroup="embedded"></AdditionalFiles>
+    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Default', 'true'))"></AdditionalFiles>
+    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Default', 'true'))"
+                     ModResourcesItemGroup="unpack"></AdditionalFiles>
+    <EmbeddedResource Include="@(ModResource)"></EmbeddedResource>
+  </ItemGroup>
+</Project>

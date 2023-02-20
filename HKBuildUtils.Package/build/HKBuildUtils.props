@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_HKBuildUtils_TaskFolder>$(MSBuildThisFileDirectory)..\analyzers\dotnet\cs</_HKBuildUtils_TaskFolder>
+    <_HKBuildUtils_TaskAssembly>$(_HKBuildUtils_TaskFolder)\HKBuildUtils.Main.dll</_HKBuildUtils_TaskAssembly>
+
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+  </PropertyGroup>
+
+  <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask"
+             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+  <UsingTask TaskName="HKBuildUtils.ModDep.ResovleModDependenciesTask"
+             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+  <UsingTask TaskName="HKBuildUtils.ModDep.SetupModdingAPITask"
+             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+
+  <ItemGroup>
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ModResourcesItemGroup"/>
+  </ItemGroup>
+
+</Project>

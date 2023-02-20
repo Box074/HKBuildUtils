@@ -59,12 +59,18 @@ namespace HKBuildUtils.CodeGen.Resources
 
                 var name = Path.GetFileNameWithoutExtension(file.Path);
                 var pl = Path.GetFullPath(file.Path);
-                var rp = pl.Substring(root.Length + 1).Replace('\\', '/');
-                var np = rp.Replace('/', '.');
-
                 var codename = name.Replace('.', '_')
                                     .Replace(' ', '_')
                                     .ToUpper();
+                if(!pl.StartsWith(root))
+                {
+                    code.AppendLine($"[Obsolete(\"Incorrect resource file\", true)]public static byte[] {codename} => throw new NotSupportedException();");
+                    continue;
+                }
+                var rp = pl.Substring(root.Length + 1).Replace('\\', '/');
+                var np = rp.Replace('/', '.');
+
+                
                 if(type == "unpack")
                 {
                     code.AppendLine($"public static byte[] {codename} => GetResourceBytes(\"{rp}\");");
@@ -73,14 +79,14 @@ namespace HKBuildUtils.CodeGen.Resources
                     code.AppendLine($"public static byte[] {codename} => GetResourceBytesImpl(\"{np}\");");
                 } else
                 {
-                    code.AppendLine($"public static byte[] {codename} => throw new NotSupportedException();");
+                    code.AppendLine($"[Obsolete(\"Unknown resource type '{type}'\", true)]public static byte[] {codename} => throw new NotSupportedException();");
                 }
             }
 
             code.AppendLine("}");
             context.AddSource("HKBuildUtils.Resources.g.cs", code.ToString());
         }
-
+        [Obsolete("Incorrect resource file")]
         public void Initialize(GeneratorInitializationContext context)
         {
             
