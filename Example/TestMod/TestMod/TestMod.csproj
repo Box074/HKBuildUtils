@@ -23,13 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HKBuildUtils" Version="0.2.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ModReference Include="HKMirror"></ModReference>
   </ItemGroup>
 
@@ -43,5 +36,15 @@
     <None Include=".gitignore" />
     <Folder Remove="~ModLibrary" />
     <ModResource Include="TextFile1.txt" Default="true"></ModResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HKBuildUtils" Version="0.2.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="HKBuildUtils.HKMirrorRef.Fody" Version="0.2.8">
+
+    </PackageReference>
   </ItemGroup>
 </Project>

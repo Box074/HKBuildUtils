@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="./Common.props"/>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <Title>Hollow Knight Modding Build Utils</Title>
+    <Authors>HKLab</Authors>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <Description>
+      A nuget package to help make the Hollow Knight Mod
+    </Description>
+    <PackageTags>HollowKnight;HollowKnightMod;HKMirror</PackageTags>
+    <NoWarn>NU5100</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/HKLab/HKBuildUtils</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="./CommonPackage.props"/>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="none" />
+    <PackageReference Include="FodyPackaging" Version="6.6.4" PrivateAssets="All" />
+  </ItemGroup>
+
+  <Target Name="BuildTheCompilerProject" BeforeTargets="BeforeBuild">
+    <MSBuild Projects="..\$(PackageId)\$(PackageId).csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+  </Target>
+</Project>

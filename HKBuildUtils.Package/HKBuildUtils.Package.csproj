@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../CommonPackage.props"/>
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -9,23 +11,10 @@
 
   <PropertyGroup>
     <PackageId>HKBuildUtils</PackageId>
-    <Version>0.2.0</Version>
-    <IsPackable>true</IsPackable>
-    <Title>Hollow Knight Modding Build Utils</Title>
-    <Authors>HKLab</Authors>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
-    <Description>
-      A nuget package to help make the Hollow Knight Mod
-    </Description>
-    <PackageTags>HollowKnight;HollowKnightMod;HKMirror</PackageTags>
     <TargetsForTfmSpecificBuildOutput>
       $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage
     </TargetsForTfmSpecificBuildOutput>
-    <NoWarn>NU5100</NoWarn>
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/HKLab/HKBuildUtils</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <DevelopmentDependency>true</DevelopmentDependency>
 
@@ -36,6 +25,7 @@
     <None Remove="build\HKBuildUtils.props" />
     <None Remove="build\HKBuildUtils.targets" />
   </ItemGroup>
+
 
   <ItemGroup>
     <Content Include="build\HKBuildUtils.props">
@@ -54,12 +44,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HKBuildUtils\HKBuildUtils.csproj" />
+    
+    <ProjectReference Include="..\HKBuildUtils\HKBuildUtils.Main.csproj">
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\*.dll;$(OutputPath)\*.exe" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\*.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="..\HKBuildUtils\bin\Debug\netstandard2.0\HKBuildUtils.Main.deps.json" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>

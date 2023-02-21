@@ -1,4 +1,5 @@
 using FSMProxy;
+using HKMirror.Reflection;
 using Modding;
 using System;
 using System.Text;
@@ -26,6 +27,16 @@ namespace TestMod
         public TestModMod() : base("TestMod")
         {
             _instance = this;
+
+            
+        }
+
+        private void BuildTest()
+        {
+            var r = HeroController.instance.Reflect();
+            Log(r.rb2d);
+            Log(r.GetCState("A"));
+            r.OnDisable();
         }
 
         private void AfterOrig_FixedUpdate(HKMirror.Hooks.OnHooks.OnHeroController.Delegates.Params_FixedUpdate args)
