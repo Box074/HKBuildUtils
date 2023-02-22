@@ -26,5 +26,6 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       run: |
         dotnet pack -o ./OutPackages
-        nuget push ./OutPackages/*.nupkg -Source https://api.nuget.org/v3/index.json
+        cd OutPackages
+        nuget push *.nupkg -Source https://api.nuget.org/v3/index.json
         

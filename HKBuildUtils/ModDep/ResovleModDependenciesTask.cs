@@ -16,7 +16,6 @@ namespace HKBuildUtils.ModDep
     {
         [Required]
         public string LibraryCache { get; set; } = "";
-        [Required]
         public string ModNames { get; set; } = "";
         public override bool Execute()
         {

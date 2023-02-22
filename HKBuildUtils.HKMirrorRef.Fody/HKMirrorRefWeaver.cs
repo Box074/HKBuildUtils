@@ -8,6 +8,7 @@ using System.Linq;
 
 public class ModuleWeaver : BaseModuleWeaver
 {
+    public const int SupportLatestHKMirrorVersion = 1;
     public override void Execute()
     {
         var methods = ModuleDefinition.GetAllTypes().SelectMany(x => x.Methods);
@@ -37,6 +38,22 @@ public class ModuleWeaver : BaseModuleWeaver
                 if (type.StartsWith("HKMirror.Reflection"))
                 {
                     var typeD = mr.DeclaringType.Resolve();
+                    var generatorVer = (int)(
+                        typeD.Fields.FirstOrDefault(x => x.Name == "$[__hkmirror_reflection_generator_version__]" && x.IsLiteral)?.Constant
+                        ?? 0);
+                    if(generatorVer > SupportLatestHKMirrorVersion)
+                    {
+                        WriteWarning("The currently used HKMirror builder version is too high, please update HKBuildUtils.HKMirrorRef.Fody for normal operation. Current Action: Ignore");
+                        return;
+                    }
+                    if(generatorVer == 1)
+                    {
+                        var md = mr.Resolve();
+                        if(md.HasBody)
+                        {
+                            
+                        }
+                    }
                     var wrapper = typeD.BaseType as GenericInstanceType;
                     if (wrapper == null)
                     {
