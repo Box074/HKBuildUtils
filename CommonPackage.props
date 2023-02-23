@@ -14,6 +14,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/HKLab/HKBuildUtils</RepositoryUrl>
+
+    <PackageOutputPath>$(ProjectDir)../OutPackages</PackageOutputPath>
   </PropertyGroup>
 
 </Project>

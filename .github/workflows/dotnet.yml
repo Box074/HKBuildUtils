@@ -23,7 +23,6 @@ jobs:
     - name: Build
       run: |
         dotnet build --no-restore
-        dotnet pack -o ./OutPackages
     - uses: actions/upload-artifact@v3
       with:
         name: nuget packages
