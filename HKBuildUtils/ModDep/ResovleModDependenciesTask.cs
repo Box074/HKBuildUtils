@@ -16,9 +16,11 @@ namespace HKBuildUtils.ModDep
     {
         [Required]
         public string LibraryCache { get; set; } = "";
+     
         public string ModNames { get; set; } = "";
         public override bool Execute()
         {
+            if (ModNames == null) return true;
             var modNames = ModNames.Split(';');
             Log.LogMessage("Fetch Modlinks");
             var modlinksResponse = WebRequest.Create(@"https://github.com/hk-modding/modlinks/raw/main/ModLinks.xml")
@@ -35,10 +37,11 @@ namespace HKBuildUtils.ModDep
             var tasks = new List<System.Threading.Tasks.Task>();
             foreach (var v in modNames)
             {
+                if(string.IsNullOrWhiteSpace(v)) continue;
                 if (!mods.TryGetValue(v, out var mod))
                 {
-                    Log.LogError($"The specified mods were not found: {v}");
-                    return false;
+                    Log.LogWarning($"The specified mods were not found: {v}");
+                    continue;
                 }
                 var moddir = Path.GetFullPath(Path.Combine(LibraryCache, v));
                 Log.LogMessage("Moddir: " + moddir);

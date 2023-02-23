@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{ADEE4D7F-4873-4B7E-8EC6-90FFB0E16A26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleHKMirrorMerge", "ExampleHKMirrorMerge\ExampleHKMirrorMerge.csproj", "{7BDA5B4C-774C-4389-98C4-9C5616C5FAE5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADEE4D7F-4873-4B7E-8EC6-90FFB0E16A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADEE4D7F-4873-4B7E-8EC6-90FFB0E16A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADEE4D7F-4873-4B7E-8EC6-90FFB0E16A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADEE4D7F-4873-4B7E-8EC6-90FFB0E16A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDA5B4C-774C-4389-98C4-9C5616C5FAE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDA5B4C-774C-4389-98C4-9C5616C5FAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDA5B4C-774C-4389-98C4-9C5616C5FAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDA5B4C-774C-4389-98C4-9C5616C5FAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EE1F7E9-EBCB-475C-80CC-5F9C255CF4EB}
+	EndGlobalSection
+EndGlobal

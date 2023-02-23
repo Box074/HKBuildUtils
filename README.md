@@ -32,7 +32,9 @@ For example, Custom Knight, its assembly file name is `CustomKnight.dll` instead
 Set game paths to use game files directly instead of downloading them again.
 
 HKBuildUtils will look for the game directory in the following order
+
 (1.) The contents of hkpath.txt under the project folder or its ancestor folder
+
 (2.) `HollowKnightRefs` defined in the project file
 
 > Note:

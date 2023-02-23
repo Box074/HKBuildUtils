@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>ExampleHKMirrorMerge</RootNamespace>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <MergeHKMirror>true</MergeHKMirror>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="HKBuildUtils" Version="0.3.16">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ModReference Include="HKMirror" />
+  </ItemGroup>
+
+</Project>

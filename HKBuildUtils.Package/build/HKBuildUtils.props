@@ -3,7 +3,7 @@
   <PropertyGroup>
     <_HKBuildUtils_TaskFolder>$(MSBuildThisFileDirectory)..\analyzers\dotnet\cs</_HKBuildUtils_TaskFolder>
     <_HKBuildUtils_TaskAssembly>$(_HKBuildUtils_TaskFolder)\HKBuildUtils.Main.dll</_HKBuildUtils_TaskAssembly>
-
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
 

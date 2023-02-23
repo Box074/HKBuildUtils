@@ -6,7 +6,7 @@
     <HKBU_HKPath_Path Condition="$(HKBU_HKPath_Path) == ''">$([MSBuild]::GetPathOfFileAbove('HollowKnightRefs.txt', '$(ProjectDir)'))</HKBU_HKPath_Path>
     <HollowKnightRefs Condition="$(HKBU_HKPath_Path) != ''">$([System.IO.File]::ReadAllText('$(HKBU_HKPath_Path)'))</HollowKnightRefs>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <HKBU_UseLocalMod
         Condition="$(DisableLocalMods) == true">false</HKBU_UseLocalMod>
@@ -37,7 +37,6 @@
     <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
 
     <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
-
     <Reference Include="@(HKBU_MAPIFiles)"/>
 
     <None Remove="$(HKBU_LibraryModCache)/**"></None>
@@ -57,14 +56,35 @@
              Text="Require Mods: @(HKBU_RequireMods)"></Message>
 
     <ResovleModDependenciesTask LibraryCache="$(HKBU_LibraryModCache)"
-                                ModNames="@(HKBU_RequireMods, ';')"
+                                ModNames=";@(HKBU_RequireMods, ';')"
                                 Condition="$(HKBU_UseLocalMod) != true">
     </ResovleModDependenciesTask>
 
     <Message Condition="$(HKBU_UseLocalMod) == true"
              Text="Use the local Mods folder: $(HKBU_LibraryModCache)"
              Importance="high"></Message>
+
+    <ItemGroup>
+      <HKBU_RequireMods Include="@(ModReference->Distinct())" />
+
+      <HKBU_LibraryReferences_HAS_AssemblyName  Include="@(ModReference->HasMetadata('AssemblyName'))" />
+      <HKBU_LibraryReferences Include="@(HKBU_LibraryReferences_HAS_AssemblyName -> '$(HKBU_LibraryModCache)/%(Identity)/%(AssemblyName).dll')"
+                            />
+
+      <HKBU_LibraryReferences Include="@(ModReference-> '$(HKBU_LibraryModCache)/%(Identity)/%(Identity).dll')"/>
+
+
+
+      <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
+
+
+    </ItemGroup>
+    <Message
+            Condition="$(Configuration) == 'Release'"
+             Text="Reference Mod Dlls: @(HKBU_LibraryReferences->Distinct()->Exists() ,'&#10;')"
+             Importance="high"></Message>
   </Target>
+
   <Target Name="ResolveModdingAPI" BeforeTargets="BeforeBuild">
     <PropertyGroup>
       <HKBU_SkipSetupModdingAPI Condition="Exists('$(HKBU_MAPICache)/Assembly-CSharp.dll')">true</HKBU_SkipSetupModdingAPI>
@@ -79,6 +99,14 @@
              Condition="$(HKBU_SkipSetupModdingAPI) == true"></Message>
     <Message
              Text="Use the modding api folder: $(HKBU_MAPICache)"
+             Importance="high"></Message>
+    <ItemGroup>
+      <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
+      <Reference Include="@(HKBU_MAPIFiles)"/>
+    </ItemGroup>
+    <Message
+             Condition="$(Configuration) == 'Release'"
+             Text="Reference Modding API Dlls: @(HKBU_MAPIFiles, '&#10;')"
              Importance="high"></Message>
   </Target>
 
