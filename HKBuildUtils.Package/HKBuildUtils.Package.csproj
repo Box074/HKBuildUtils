@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../CommonPackage.props"/>
+  <Import Project="../CommonPackage.props" />
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>HKBuildUtils.Lib</AssemblyName>
+    <NoWarn>NU5128;NU5100</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -44,6 +47,13 @@
   </ItemGroup>
 
   <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <ProjectReference Include="..\Fody.ReflectHelper\Fody.ReflectHelper.csproj">
+      <Private>True</Private>
+    </ProjectReference>
     
     <ProjectReference Include="..\HKBuildUtils\HKBuildUtils.Main.csproj">
       <Private>True</Private>
@@ -52,7 +62,12 @@
 
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\*.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\libs\ILRepack.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\libs\Mono.Cecil\*.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Lib.dll" PackagePath="lib/net472" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Main.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Remove="$(OutputPath)\Fody.*.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\Fody.*.dll" PackagePath="weavers" />
       <TfmSpecificPackageFile Include="..\HKBuildUtils\bin\Debug\netstandard2.0\HKBuildUtils.Main.deps.json" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>

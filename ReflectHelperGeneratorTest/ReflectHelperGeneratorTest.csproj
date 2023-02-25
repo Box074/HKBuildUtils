@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HKBuildUtils\HKBuildUtils.Main.csproj" />
+
+    <Reference Include="Mono.Cecil">
+      <HintPath>../libs/Mono.Cecil/Mono.Cecil.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <Private>true</Private>
+      <HintPath>../libs/Mono.Cecil/Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="ILRepack">
+      <Private>true</Private>
+      <HintPath>../libs/ILRepack.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

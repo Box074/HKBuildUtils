@@ -61,7 +61,9 @@ namespace HKBuildUtils.CodeGen.Resources
                 var pl = Path.GetFullPath(file.Path);
                 var codename = name.Replace('.', '_')
                                     .Replace(' ', '_')
+                                    .Replace('-', '_')
                                     .ToUpper();
+
                 if(!pl.StartsWith(root))
                 {
                     code.AppendLine($"[Obsolete(\"Incorrect resource file\", true)]public static byte[] {codename} => throw new NotSupportedException();");
@@ -70,7 +72,7 @@ namespace HKBuildUtils.CodeGen.Resources
                 var rp = pl.Substring(root.Length + 1).Replace('\\', '/');
                 var np = rp.Replace('/', '.');
 
-                
+                code.AppendLine($"public const string RES_ID_{codename} = \"{(string.IsNullOrEmpty(rootNamespace) ? np : $"{rootNamespace}.{np}")}\";");
                 if(type == "unpack")
                 {
                     code.AppendLine($"public static byte[] {codename} => GetResourceBytes(\"{rp}\");");

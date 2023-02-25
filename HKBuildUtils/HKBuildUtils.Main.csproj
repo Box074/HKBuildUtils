@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../Common.props"/>
+  <Import Project="../Common.props" />
 
   <PropertyGroup>
     
@@ -8,6 +8,8 @@
     <Nullable>enable</Nullable>
     <AssemblyName>HKBuildUtils.Main</AssemblyName>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <RootNamespace>HKBuildUtils</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -53,10 +55,5 @@
 
   <ItemGroup>
     <None Include="I:\CSProject\HKBuildUtils\HKBuildUtils\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="template\" />
-    <Folder Include="UnityHelper\" />
   </ItemGroup>
 </Project>

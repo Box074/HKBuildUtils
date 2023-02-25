@@ -28,20 +28,23 @@ namespace TestMod
         {
             _instance = this;
 
-            
+            ModLoaderR.TryAddModInstance(typeof(TestModMod), new()
+            {
+                Enabled = true,
+                Mod = this,
+                Name = "Test This 1"
+            });
         }
 
         private void BuildTest()
         {
-            var r = HeroController.instance.Reflect();
-            Log(r.rb2d);
-            Log(r.GetCState("A"));
-            r.OnDisable();
+            var hero = (HeroControllerR)HeroController.instance.Reflect();
+            Log("H: " + hero.col2d.bounds.ToString());
         }
 
         private void AfterOrig_FixedUpdate(HKMirror.Hooks.OnHooks.OnHeroController.Delegates.Params_FixedUpdate args)
         {
-            LogDebug(ModResources.TEXTFILE1);
+            BuildTest();
         }
 
         public override void Initialize()

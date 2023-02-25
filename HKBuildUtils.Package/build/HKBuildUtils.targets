@@ -7,44 +7,68 @@
     <HollowKnightRefs Condition="$(HKBU_HKPath_Path) != ''">$([System.IO.File]::ReadAllText('$(HKBU_HKPath_Path)'))</HollowKnightRefs>
   </PropertyGroup>
 
+  <!--Mod Resources-->
+  <ItemGroup>
+    <AdditionalFiles Include="@(ModResource)"
+                     ModResourcesItemGroup="embedded"></AdditionalFiles>
+    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Default', 'true'))"></AdditionalFiles>
+    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Default', 'true'))"
+                     ModResourcesItemGroup="unpack"></AdditionalFiles>
+    <EmbeddedResource Include="@(ModResource)"></EmbeddedResource>
+  </ItemGroup>
+
   <PropertyGroup>
     <HKBU_UseLocalMod
         Condition="$(DisableLocalMods) == true">false</HKBU_UseLocalMod>
     <HKBU_HollowKnightCheckFile>$(HollowKnightRefs)\Assembly-CSharp.dll</HKBU_HollowKnightCheckFile>
     <HKBU_UseLocalMod
       Condition="$(HollowKnightRefs) != '' and $([System.IO.File]::Exists($(HKBU_HollowKnightCheckFile))) and $(DisableLocalMods) != true">true</HKBU_UseLocalMod>
-
+    
+    <HKBU_ModLibraryFolder>$(ProjectDir)\~ModLibrary\</HKBU_ModLibraryFolder>
+    
     <HKBU_LibraryModCache
-        Condition="$(HKBU_UseLocalMod) != true">$(ProjectDir)\~ModLibrary\</HKBU_LibraryModCache>
+        Condition="$(HKBU_UseLocalMod) != true">$(HKBU_ModLibraryFolder)</HKBU_LibraryModCache>
     <HKBU_LibraryModCache
         Condition="$(HKBU_UseLocalMod) == true">$(HollowKnightRefs)\Mods\</HKBU_LibraryModCache>
 
     <HKBU_MAPICache
-        Condition="$(HKBU_UseLocalMod) != true">$(ProjectDir)\~ModLibrary\ModdingAPI</HKBU_MAPICache>
+        Condition="$(HKBU_UseLocalMod) != true">$(HKBU_ModLibraryFolder)\ModdingAPI</HKBU_MAPICache>
     <HKBU_MAPICache
         Condition="$(HKBU_UseLocalMod) == true">$(HollowKnightRefs)</HKBU_MAPICache>
+    
+    <HKBU_BinTempPath Condition="$(HKBU_UseLocalMod) == true">$(ProjectDir)/obj/__TEMP_BIN__</HKBU_BinTempPath>
+    <HKBU_BinTempPath Condition="$(HKBU_UseLocalMod) != true">$(HKBU_ModLibraryFolder)/__TEMP_BIN__</HKBU_BinTempPath>
   </PropertyGroup>
 
+
+  <!--Mod Library Reference-->
   <ItemGroup>
+    <!--Library Mods-->
     <HKBU_LibraryReferences_HAS_AssemblyName  Include="@(ModReference->HasMetadata('AssemblyName'))" />
     <HKBU_LibraryReferences Include="@(HKBU_LibraryReferences_HAS_AssemblyName -> '$(HKBU_LibraryModCache)/%(Identity)/%(AssemblyName).dll')"
                             />
-
     <HKBU_LibraryReferences Include="@(ModReference-> '$(HKBU_LibraryModCache)/%(Identity)/%(Identity).dll')"/>
-
-
-
     <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
-
+    
+    <!--Modding API-->
     <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
     <Reference Include="@(HKBU_MAPIFiles)"/>
-
+    
+    <!--Reflect Helper-->
+    <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
+    <Reference Include="@(HKBU_ReflectHelperReferences)" />
+    
     <None Remove="$(HKBU_LibraryModCache)/**"></None>
   </ItemGroup>
-
-  <Target Name="MergeHKMirror" AfterTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
+  
+  <!--Targets-->
+  <Target Name="MergeHKMirror" BeforeTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
     <MergeHKMirrorTask ModOutput="$(TargetPath)"></MergeHKMirrorTask>
   </Target>
+  <!--
+  <Target Name="MergeHKBULib" BeforeTargets="PostBuildEvent">
+    <MergeHKBULibTask ModOutput="$(TargetPath)"></MergeHKBULibTask>
+  </Target>-->
 
   <Target Name="ResolveModDependencies" BeforeTargets="BeforeBuild">
     <ItemGroup>
@@ -70,13 +94,8 @@
       <HKBU_LibraryReferences_HAS_AssemblyName  Include="@(ModReference->HasMetadata('AssemblyName'))" />
       <HKBU_LibraryReferences Include="@(HKBU_LibraryReferences_HAS_AssemblyName -> '$(HKBU_LibraryModCache)/%(Identity)/%(AssemblyName).dll')"
                             />
-
       <HKBU_LibraryReferences Include="@(ModReference-> '$(HKBU_LibraryModCache)/%(Identity)/%(Identity).dll')"/>
-
-
-
       <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
-
 
     </ItemGroup>
     <Message
@@ -109,13 +128,19 @@
              Text="Reference Modding API Dlls: @(HKBU_MAPIFiles, '&#10;')"
              Importance="high"></Message>
   </Target>
+  
+  <!--Generate ReflectHelper-->
+  <Target Name="GenerateReflectHelper" BeforeTargets="BeforeBuild"
+          AfterTargets="ResolveModDependencies;ResolveModdingAPI">
+    <ItemGroup>
+      <HKBU_ReflectHelper_RequireGenerate Include="@(HKBU_ReflectHelperReferences->Distinct())"/>
+      <HKBU_ReflectHelper_RequireGenerate Remove="@(HKBU_ReflectHelper_RequireGenerate->Exists())"/>
+    </ItemGroup>
+    <GenerateReflectHelperTask
+      AllReference=";@(Reference, ';')"
+      OutFiles=";@(HKBU_ReflectHelper_RequireGenerate, ';')"
+      />
+  </Target>
+  
 
-  <ItemGroup>
-    <AdditionalFiles Include="@(ModResource)"
-                     ModResourcesItemGroup="embedded"></AdditionalFiles>
-    <AdditionalFiles Remove="@(ModResource->WithMetadataValue('Default', 'true'))"></AdditionalFiles>
-    <AdditionalFiles Include="@(ModResource->WithMetadataValue('Default', 'true'))"
-                     ModResourcesItemGroup="unpack"></AdditionalFiles>
-    <EmbeddedResource Include="@(ModResource)"></EmbeddedResource>
-  </ItemGroup>
 </Project>

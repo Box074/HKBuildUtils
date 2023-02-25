@@ -18,6 +18,8 @@
     <HollowKnightRefs>..\API</HollowKnightRefs>
     <ExportDir>bin\Publish</ExportDir>
 
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
     <MergeHKMirror>true</MergeHKMirror>
     <DisableLocalMods>false</DisableLocalMods>
   </PropertyGroup>
@@ -36,15 +38,20 @@
     <None Include=".gitignore" />
     <Folder Remove="~ModLibrary" />
     <ModResource Include="TextFile1.txt" Default="true"></ModResource>
+
+    <ReflectHelper Include="PlayMaker" />
+    <ReflectHelper Include="Assembly-CSharp" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HKBuildUtils" Version="0.2.5">
+    <PackageReference Include="Fody" Version="6.6.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils.HKMirrorRef.Fody" Version="0.2.8">
-
+    <PackageReference Include="HKBuildUtils" Version="0.3.56">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+
   </ItemGroup>
 </Project>
