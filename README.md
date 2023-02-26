@@ -27,6 +27,33 @@ For example, Custom Knight, its assembly file name is `CustomKnight.dll` instead
 <ModReference Include="Custom Knight" AssemblyName="CustomKnight" />
 ```
 
+### Reflect Helper
+
+
+
+### Mono Mod Hooks Helper
+
+Allow developers to use MonoModHooks outside of `MMHOOK_Assembly-CSharp` and `MMHOOK_PlayMaker.dll`
+
+They are automatically generated and automatically referenced at build
+
+Use `<MonoModHook Include="<AssemblyName>" />` to indicate which assemblies need to construct MonoModHookHelper
+
+> `<AssemblyName>` can use assemblies explicitly referenced in project files using `<Reference>` and MAPI assemblies and other Mods assemblies inserted by HKBU
+
+For example:
+
+```xml
+<MonoModHook Include="UnityEngine.CoreModule" />
+<MonoModHook Include="Assembly-CSharp" />
+```
+
+They indicate the MonoHookHelper that generates UnityEngine.CoreModule and Assembly-CSharp
+
+To avoid errors, this automatically disables the reference to MMHOOK_Assembly-CSharp that comes with MAPI
+
+MonoModHookHelper (including those that come with MAPI) will be merged into the mod assembly by Fody in the build, no need to publish additional files
+
 #### Set game path
 
 Set game paths to use game files directly instead of downloading them again.
@@ -44,6 +71,8 @@ HKBuildUtils will look for the game directory in the following order
 ### Merger with HKMirror
 
 Use ILRepack to merge mods with [HKMirror](https://github.com/TheMulhima/HKMirror) and eliminate unused types in [HKMirror](https://github.com/TheMulhima/HKMirror).
+
+> It is recommended to use [Reflect Helper](#Reflect Helper)
 
 #### How to enable
 
