@@ -72,7 +72,7 @@ HKBuildUtils will look for the game directory in the following order
 
 Use ILRepack to merge mods with [HKMirror](https://github.com/TheMulhima/HKMirror) and eliminate unused types in [HKMirror](https://github.com/TheMulhima/HKMirror).
 
-> It is recommended to use [Reflect Helper](#Reflect%20Helper)
+> It is recommended to use [Reflect Helper](#Reflect-Helper)
 
 #### How to enable
 
