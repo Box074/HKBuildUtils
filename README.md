@@ -27,8 +27,41 @@ For example, Custom Knight, its assembly file name is `CustomKnight.dll` instead
 <ModReference Include="Custom Knight" AssemblyName="CustomKnight" />
 ```
 
+#### Set game path
+
+Set game paths to use game files directly instead of downloading them again.
+
+HKBuildUtils will look for the game directory in the following order
+
+(1.) The contents of hkpath.txt under the project folder or its ancestor folder
+
+(2.) `HollowKnightRefs` defined in the project file
+
+> Note:
+> 1. (1.) will be used if both (1.) and (2.) are found, you can disable (1.) and use (2.) by using `<DisableOverwriteHollowKnightRefs>true</DisableOverwriteHollowKnightRefs>`
+> 2. If neither of them exists or the directory they specify does not exist, it will be considered as a build in CI, and the dependent mods and HKMAPI will be downloaded to the `~ModLibrary` folder under the project folder during the build
+
+
 ### Reflect Helper
 
+Used to replace the Reflect Helper  of HKMirror
+
+Allows developers to directly access private fields and private types
+
+**If you need to use this feature, please add a reference to the Fody package**
+
+> Warning: Due to Mono's strange access checks, exceptions such as `MemberAccessException` will occur with a very small probability. This seems to happen randomly and I can't reproduce it, which means I'm next to impossible to fix it. If you found it, please provide the ModLog.txt and the mod assembly file that Hollow Knight is using
+
+#### Compare with HKMirror
+
+Advantage:
+
+- No need to add additional references
+- Can be used with almost any assembly
+- Has most of the private types
+- Custom operator operations with primitive types
+- Primitive object instances can be created directly using `new`. For example, `new ModInstanceR()` will create an instance of `ModLoader.ModInstance`
+- Can be converted to and from primitive types
 
 
 ### Mono Mod Hooks Helper
@@ -36,6 +69,8 @@ For example, Custom Knight, its assembly file name is `CustomKnight.dll` instead
 Allow developers to use MonoModHooks outside of `MMHOOK_Assembly-CSharp` and `MMHOOK_PlayMaker.dll`
 
 They are automatically generated and automatically referenced at build
+
+**If you need to use this feature, please add a reference to the Fody package**
 
 Use `<MonoModHook Include="<AssemblyName>" />` to indicate which assemblies need to construct MonoModHookHelper
 
@@ -53,20 +88,6 @@ They indicate the MonoHookHelper that generates UnityEngine.CoreModule and Assem
 To avoid errors, this automatically disables the reference to MMHOOK_Assembly-CSharp that comes with MAPI
 
 MonoModHookHelper (including those that come with MAPI) will be merged into the mod assembly by Fody in the build, no need to publish additional files
-
-#### Set game path
-
-Set game paths to use game files directly instead of downloading them again.
-
-HKBuildUtils will look for the game directory in the following order
-
-(1.) The contents of hkpath.txt under the project folder or its ancestor folder
-
-(2.) `HollowKnightRefs` defined in the project file
-
-> Note:
-> 1. (1.) will be used if both (1.) and (2.) are found, you can disable (1.) and use (2.) by using `<DisableOverwriteHollowKnightRefs>true</DisableOverwriteHollowKnightRefs>`
-> 2. If neither of them exists or the directory they specify does not exist, it will be considered as a build in CI, and the dependent mods and HKMAPI will be downloaded to the `~ModLibrary` folder under the project folder during the build
 
 ### Merger with HKMirror
 
