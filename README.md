@@ -79,8 +79,6 @@ ModLoaderR.TryAddModInstance(typeof(TestModMod), new ModInstanceR()
 }); 
 ```
 
-> Warning: Due to Mono's strange access checks, exceptions such as `MemberAccessException` will occur with a very small probability. This seems to happen randomly and I can't reproduce it, which means I'm next to impossible to fix it. If you found it, please provide the ModLog.txt and the mod assembly file that Hollow Knight is using
-
 #### Compare with HKMirror
 
 Advantage:
