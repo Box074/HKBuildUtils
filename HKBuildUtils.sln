@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectHelperGeneratorTest"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fody.ReflectHelper", "Fody.ReflectHelper\Fody.ReflectHelper.csproj", "{471B4084-6EEA-4F08-A4DF-71DA5A74A310}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fody.MonoModHookMerge", "Fody.MonoModHookMerge\Fody.MonoModHookMerge.csproj", "{57848826-CEAA-4BB8-A262-43EFDB3BD0BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{471B4084-6EEA-4F08-A4DF-71DA5A74A310}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{471B4084-6EEA-4F08-A4DF-71DA5A74A310}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{471B4084-6EEA-4F08-A4DF-71DA5A74A310}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57848826-CEAA-4BB8-A262-43EFDB3BD0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57848826-CEAA-4BB8-A262-43EFDB3BD0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57848826-CEAA-4BB8-A262-43EFDB3BD0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57848826-CEAA-4BB8-A262-43EFDB3BD0BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +62,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F948A334-96FD-4013-9773-D43EC852486F} = {1C0F181E-B8C4-4E34-8F65-64AAEB4EC2B0}
 		{471B4084-6EEA-4F08-A4DF-71DA5A74A310} = {C3BCC3F1-5BA1-43F7-B0F0-4C38E14C1B0B}
+		{57848826-CEAA-4BB8-A262-43EFDB3BD0BF} = {C3BCC3F1-5BA1-43F7-B0F0-4C38E14C1B0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE2BC876-3BA7-4D62-8B65-D00B3EE1C1D8}

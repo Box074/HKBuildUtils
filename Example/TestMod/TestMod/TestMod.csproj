@@ -41,6 +41,9 @@
 
     <ReflectHelper Include="PlayMaker" />
     <ReflectHelper Include="Assembly-CSharp" />
+
+    <MonoModHook Include="UnityEngine.CoreModule" />
+    <MonoModHook Include="Assembly-CSharp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,7 +51,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils" Version="0.3.56">
+    <PackageReference Include="HKBuildUtils" Version="0.4.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

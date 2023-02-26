@@ -22,17 +22,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" ExcludeAssets="Runtime" developmentDependency="true" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" ExcludeAssets="Runtime" developmentDependency="true" />
 
-    <Reference Include="Mono.Cecil">
-      <HintPath>../libs/Mono.Cecil/Mono.Cecil.dll</HintPath>
+    <Reference Include="../libs/**/*.dll">
       <Private>true</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <Private>true</Private>
-      <HintPath>../libs/Mono.Cecil/Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="ILRepack">
-      <Private>true</Private>
-      <HintPath>../libs/ILRepack.dll</HintPath>
     </Reference>
   </ItemGroup>
 

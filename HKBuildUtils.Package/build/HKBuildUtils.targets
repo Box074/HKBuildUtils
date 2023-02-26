@@ -58,8 +58,19 @@
     <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
     <Reference Include="@(HKBU_ReflectHelperReferences)" />
     
+    
+    <!--MonoMod Hooks-->
+    <HKBU_MMHooksReferences Include="@(MonoModHook -> '$(HKBU_BinTempPath)/MMHOOK.%(Identity).dll')" />
+    
+    <Reference Include="@(HKBU_MMHooksReferences)" />
+    <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
+    
     <None Remove="$(HKBU_LibraryModCache)/**"></None>
   </ItemGroup>
+
+  <PropertyGroup>
+    <HKBU_Use_Compiler_Helper>true</HKBU_Use_Compiler_Helper>
+  </PropertyGroup>
   
   <!--Targets-->
   <Target Name="MergeHKMirror" BeforeTargets="PostBuildEvent" Condition="$(MergeHKMirror) == true">
@@ -122,6 +133,7 @@
     <ItemGroup>
       <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
       <Reference Include="@(HKBU_MAPIFiles)"/>
+      <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
     </ItemGroup>
     <Message
              Condition="$(Configuration) == 'Release'"
@@ -139,6 +151,19 @@
     <GenerateReflectHelperTask
       AllReference=";@(Reference, ';')"
       OutFiles=";@(HKBU_ReflectHelper_RequireGenerate, ';')"
+      />
+  </Target>
+
+  <!--Generate MonoMod Hooks-->
+  <Target Name="GenerateMonoModHooks" BeforeTargets="BeforeBuild"
+          AfterTargets="ResolveModDependencies;ResolveModdingAPI">
+    <ItemGroup>
+      <HKBU_MMHOOK_RequireGenerate Include="@(HKBU_MMHooksReferences->Distinct())"/>
+      <HKBU_MMHOOK_RequireGenerate Remove="@(HKBU_MMHOOK_RequireGenerate->Exists())"/>
+    </ItemGroup>
+    <GenerateMonoHookTask
+      AllReference=";@(Reference, ';')"
+      OutFiles=";@(HKBU_MMHOOK_RequireGenerate, ';')"
       />
   </Target>
   

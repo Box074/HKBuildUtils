@@ -47,9 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
+    
+    <ProjectReference Include="..\Fody.MonoModHookMerge\Fody.MonoModHookMerge.csproj" />
     
     <ProjectReference Include="..\Fody.ReflectHelper\Fody.ReflectHelper.csproj">
       <Private>True</Private>
@@ -64,6 +63,7 @@
     <ItemGroup>
       <TfmSpecificPackageFile Include="..\libs\ILRepack.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="..\libs\Mono.Cecil\*.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\libs\MonoMod\*.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Lib.dll" PackagePath="lib/net472" />
       <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Main.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Remove="$(OutputPath)\Fody.*.dll" PackagePath="analyzers/dotnet/cs" />

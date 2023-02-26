@@ -7,12 +7,16 @@
     <_HKBuildUtils_TaskAssembly>$(_HKBuildUtils_TaskFolder)HKBuildUtils.Main.dll</_HKBuildUtils_TaskAssembly>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
 
   <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
   <UsingTask TaskName="HKBuildUtils.MergeHKBULibTask"
+             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+  <UsingTask TaskName="HKBuildUtils.GenerateMonoHookTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
   <UsingTask TaskName="HKBuildUtils.ModDep.ResovleModDependenciesTask"
@@ -27,7 +31,7 @@
 
   <ItemGroup>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ModResourcesItemGroup"/>
-
+    <CompilerVisibleProperty Include="HKBU_Use_Compiler_Helper" />
     <WeaverFiles Include="$(_HKBuildUtils_WeaversFolder)*.dll" />
   </ItemGroup>
 
