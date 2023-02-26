@@ -24,9 +24,9 @@ namespace Fody.ReflectHelper
         {
             //var lib = ModuleDefinition.Assembly; //ModuleDefinition.AssemblyResolver.Resolve(new("HKBuildUtils.Lib", new()))
             // ?? throw new NotSupportedException();
-            //var setSkipVisibeCheck = ModuleDefinition.ImportReference(
-            //    lib.MainModule.GetType("HKBuildUtils.Compiler.Helper").Methods
-            //    .First(x => x.Name == "SetSkipVisibeCheck"));
+            var setSkipVisibeCheck = 
+                ModuleDefinition.GetType("HKBuildUtils.Compiler.CReflectHelper")?.Methods
+                .First(x => x.Name == "SetSkipVisibeCheck");
             
             foreach(var type in ModuleDefinition.GetAllTypes())
             {
@@ -35,6 +35,7 @@ namespace Fody.ReflectHelper
                     var body = m.Body;
                     if(body != null && body.Instructions.Count > 0)
                     {
+                        bool shouldWrap = false;
                         foreach(var il in body.Instructions)
                         {
                             if(il.OpCode == OpCodes.Call && il.Operand is MethodReference mr)
@@ -45,9 +46,52 @@ namespace Fody.ReflectHelper
                                         mr.DeclaringType.Name == "ReflectHelperExt")
                                     {
                                         il.OpCode = OpCodes.Nop;
+                                        shouldWrap = true;
+                                    }
+                                }
+                                
+                            }
+                            else if(!shouldWrap && il.Operand is MemberReference member)
+                            {
+                                if(member.DeclaringType != null)
+                                {
+                                    if(IsDefinedInReflectHelper(member.DeclaringType))
+                                    {
+                                        shouldWrap = true;
                                     }
                                 }
                             }
+                        }
+                        if(shouldWrap && setSkipVisibeCheck != null)
+                        {
+                            var wrapDef = new MethodDefinition("$Wrap<" + m.Name + ">", m.Attributes, m.ReturnType);
+                            wrapDef.IsPrivate = true;
+                            wrapDef.Body = m.Body;
+                            m.Body = new(m);
+
+                            type.Methods.Add(wrapDef);
+                            foreach (var pd in m.Parameters) wrapDef.Parameters.Add(pd);
+                            foreach(var ptg in m.GenericParameters) wrapDef.GenericParameters.Add(ptg);
+                            MethodReference mr;
+                            if(m.IsGenericInstance)
+                            {
+                                var gmr = new GenericInstanceMethod(wrapDef);
+                                foreach (var v in m.GenericParameters) gmr.GenericArguments.Add(v);
+                                mr = ModuleDefinition.ImportReference(gmr);
+                            }
+                            else
+                            {
+                                mr = wrapDef;
+                            }
+                            var ilp = m.Body.GetILProcessor();
+                            ilp.Emit(OpCodes.Ldtoken, mr);
+                            ilp.Emit(OpCodes.Call, ModuleDefinition.ImportReference(setSkipVisibeCheck));
+                            for(int i = 0; i < m.Parameters.Count + (m.HasThis ? 1 : 0); i++)
+                            {
+                                ilp.Emit(OpCodes.Ldarg, i);
+                            }
+                            ilp.Emit(OpCodes.Call, mr);
+                            ilp.Emit(OpCodes.Ret);
                         }
                     }
                 }

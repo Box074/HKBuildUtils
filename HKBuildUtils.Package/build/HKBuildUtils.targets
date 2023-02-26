@@ -56,12 +56,15 @@
     
     <!--Reflect Helper-->
     <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
+    <AdditionalFiles Include="$(_HKBuildUtils_CodeFolder)MonoHelper.cs" HKBU_ImportCode="true" 
+                     Condition="@(HKBU_ReflectHelperReferences->Count()) > 0" />
     <Reference Include="@(HKBU_ReflectHelperReferences)" />
     
     
     <!--MonoMod Hooks-->
     <HKBU_MMHooksReferences Include="@(MonoModHook -> '$(HKBU_BinTempPath)/MMHOOK.%(Identity).dll')" />
-    
+    <AdditionalFiles Include="$(_HKBuildUtils_CodeFolder)MMHOOKCompilerHelper.cs" HKBU_ImportCode="true" 
+                     Condition="@(HKBU_MMHooksReferences->Count()) > 0" />
     <Reference Include="@(HKBU_MMHooksReferences)" />
     <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
     
@@ -147,6 +150,8 @@
     <ItemGroup>
       <HKBU_ReflectHelper_RequireGenerate Include="@(HKBU_ReflectHelperReferences->Distinct())"/>
       <HKBU_ReflectHelper_RequireGenerate Remove="@(HKBU_ReflectHelper_RequireGenerate->Exists())"/>
+    
+    <HKBU_RequireFody Include="@(HKBU_ReflectHelperReferences)" />
     </ItemGroup>
     <GenerateReflectHelperTask
       AllReference=";@(Reference, ';')"
@@ -156,16 +161,31 @@
 
   <!--Generate MonoMod Hooks-->
   <Target Name="GenerateMonoModHooks" BeforeTargets="BeforeBuild"
-          AfterTargets="ResolveModDependencies;ResolveModdingAPI">
+          AfterTargets="ResolveModDependencies;ResolveModdingAPI"
+          >
     <ItemGroup>
       <HKBU_MMHOOK_RequireGenerate Include="@(HKBU_MMHooksReferences->Distinct())"/>
       <HKBU_MMHOOK_RequireGenerate Remove="@(HKBU_MMHOOK_RequireGenerate->Exists())"/>
+    
+      <HKBU_RequireFody Include="@(HKBU_MMHooksReferences)" />
     </ItemGroup>
     <GenerateMonoHookTask
       AllReference=";@(Reference, ';')"
       OutFiles=";@(HKBU_MMHOOK_RequireGenerate, ';')"
       />
   </Target>
+
+  <Target Name="CheckFody" AfterTargets="GenerateReflectHelper;GenerateMonoModHooks;BeforeBuild"
+           Condition="@(HKBU_RequireFody->Count()) > 0">
+    <ItemGroup>
+      <HKBU_AllPackages Include="@(PackageReference->Distinct())" />
+    </ItemGroup>
+    <PropertyGroup>
+      <HKBU_Fody_Reference>;@(PackageReference, ';');</HKBU_Fody_Reference>
+    </PropertyGroup>
   
+    <CheckFodyTask AllPackages="$(HKBU_Fody_Reference)" />
+
+  </Target>
 
 </Project>

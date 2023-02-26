@@ -1,7 +1,9 @@
 using FSMProxy;
 using HKMirror.Reflection;
 using Modding;
+using MonoMod.RuntimeDetour.HookGen;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace TestMod
@@ -33,11 +35,13 @@ namespace TestMod
                 Enabled = true,
                 Mod = this,
                 Name = "Test This 1"
-            }); 
-            
+            });
+
+
             On.UnityEngine.MonoBehaviour.StartCoroutine_IEnumerator += MonoBehaviour_StartCoroutine_IEnumerator;
 
             On.Modding.ModLoader.TryAddModInstance += ModLoader_TryAddModInstance;
+
         }
 
         private bool ModLoader_TryAddModInstance(On.Modding.ModLoader.orig_TryAddModInstance orig, Type ty, object mod)
@@ -53,7 +57,7 @@ namespace TestMod
         }
 
         private UnityEngine.Coroutine MonoBehaviour_StartCoroutine_IEnumerator(
-            On.UnityEngine.MonoBehaviour.orig_StartCoroutine_IEnumerator orig, UnityEngine.MonoBehaviour self, 
+            On.UnityEngine.MonoBehaviour.orig_StartCoroutine_IEnumerator orig, UnityEngine.MonoBehaviour self,
             System.Collections.IEnumerator routine)
         {
             Log("Start new coroutine: " + routine.GetType().FullName);

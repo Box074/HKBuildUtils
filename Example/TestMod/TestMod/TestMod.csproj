@@ -40,6 +40,7 @@
     <ModResource Include="TextFile1.txt" Default="true"></ModResource>
 
     <ReflectHelper Include="PlayMaker" />
+    <ReflectHelper Include="mscorlib" />
     <ReflectHelper Include="Assembly-CSharp" />
 
     <MonoModHook Include="UnityEngine.CoreModule" />
@@ -51,7 +52,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils" Version="0.4.11">
+    <PackageReference Include="HKBuildUtils" Version="0.4.43">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -25,6 +25,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Compiler\MMHOOKCompilerHelper.cs" />
+    <Compile Remove="Compiler\MonoHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="build\HKBuildUtils.props" />
     <None Remove="build\HKBuildUtils.targets" />
   </ItemGroup>
@@ -37,6 +42,8 @@
     <Content Include="build\HKBuildUtils.targets">
       <PackagePath>build\</PackagePath>
     </Content>
+    <None Include="Compiler\MMHOOKCompilerHelper.cs" />
+    <None Include="Compiler\MonoHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,7 +71,7 @@
       <TfmSpecificPackageFile Include="..\libs\ILRepack.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="..\libs\Mono.Cecil\*.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="..\libs\MonoMod\*.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Lib.dll" PackagePath="lib/net472" />
+      <TfmSpecificPackageFile Include=".\Compiler\*.cs" PackagePath="code" />
       <TfmSpecificPackageFile Include="$(OutputPath)\HKBuildUtils.Main.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Remove="$(OutputPath)\Fody.*.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="$(OutputPath)\Fody.*.dll" PackagePath="weavers" />
