@@ -49,10 +49,7 @@ namespace TestMod
         private void BuildTest()
         {
             var hero = (HeroControllerR)HeroController.instance.Reflect();
-            Log("H: " + hero.col2d.bounds.ToString());
-
-            
-           
+            Log("H: " + hero.rb2d.velocity.ToString());
         }
 
         private UnityEngine.Coroutine MonoBehaviour_StartCoroutine_IEnumerator(

@@ -50,6 +50,35 @@ Allows developers to directly access private fields and private types
 
 **If you need to use this feature, please add a reference to the Fody package**
 
+Use `<ReflectHelper Include="<AssemblyName>" />` to indicate which assemblies need to construct Reflect Helper
+
+> `<AssemblyName>` can use assemblies explicitly referenced in project files using `<Reference>` and MAPI assemblies and other Mods assemblies inserted by HKBU
+
+For example:
+
+```xml
+<ReflectHelper Include="UnityEngine.CoreModule" />
+<ReflectHelper Include="Assembly-CSharp" />
+```
+
+They indicate the Reflect Helper that generates UnityEngine.CoreModule and Assembly-CSharp
+
+They can be used like
+
+```c#
+HeroControllerR reflect = HeroController.instance.Reflect(); 
+//or HeroControllerR reflect = (HeroControllerR)HeroController.instance;
+
+Log(reflect.rb2d.name);
+
+ModLoaderR.TryAddModInstance(typeof(TestModMod), new ModInstanceR()
+{
+   Enabled = true,
+   Mod = this,
+   Name = "Hello, World!This is Test Mod"
+}); 
+```
+
 > Warning: Due to Mono's strange access checks, exceptions such as `MemberAccessException` will occur with a very small probability. This seems to happen randomly and I can't reproduce it, which means I'm next to impossible to fix it. If you found it, please provide the ModLog.txt and the mod assembly file that Hollow Knight is using
 
 #### Compare with HKMirror
