@@ -39,9 +39,7 @@ namespace TestMod
 
 
             On.UnityEngine.MonoBehaviour.StartCoroutine_IEnumerator += MonoBehaviour_StartCoroutine_IEnumerator;
-
-            On.Modding.ModLoader.TryAddModInstance += ModLoader_TryAddModInstance;
-
+            
         }
 
         private bool ModLoader_TryAddModInstance(On.Modding.ModLoader.orig_TryAddModInstance orig, Type ty, object mod)

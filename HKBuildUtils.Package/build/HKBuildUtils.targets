@@ -56,8 +56,8 @@
     
     <!--Reflect Helper-->
     <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
-    <AdditionalFiles Include="$(_HKBuildUtils_CodeFolder)MonoHelper.cs" HKBU_ImportCode="true" 
-                     Condition="@(HKBU_ReflectHelperReferences->Count()) > 0" />
+    <!--<AdditionalFiles Include="$(_HKBuildUtils_CodeFolder)MonoHelper.cs" HKBU_ImportCode="true" 
+                     Condition="@(HKBU_ReflectHelperReferences->Count()) > 0" />-->
     <Reference Include="@(HKBU_ReflectHelperReferences)" />
     
     

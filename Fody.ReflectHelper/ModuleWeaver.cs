@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
+using SecurityAction = Mono.Cecil.SecurityAction;
 
 namespace Fody.ReflectHelper
 {
@@ -24,6 +26,21 @@ namespace Fody.ReflectHelper
         {
             //var lib = ModuleDefinition.Assembly; //ModuleDefinition.AssemblyResolver.Resolve(new("HKBuildUtils.Lib", new()))
             // ?? throw new NotSupportedException();
+
+            ModuleDefinition.Assembly.SecurityDeclarations.Add(new(SecurityAction.RequestMinimum)
+            {
+                SecurityAttributes =
+                {
+                    new(ModuleDefinition.ImportReference(FindTypeDefinition(typeof(SecurityPermissionAttribute).FullName)))
+                    {
+                        Properties =
+                        {
+                            new("SkipVerification", new(ModuleDefinition.TypeSystem.Boolean, true))
+                        }
+                    }
+                }
+            });
+
             var setSkipVisibeCheck = 
                 ModuleDefinition.GetType("HKBuildUtils.Compiler.CReflectHelper")?.Methods
                 .First(x => x.Name == "SetSkipVisibeCheck");
