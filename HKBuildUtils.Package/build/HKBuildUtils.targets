@@ -173,6 +173,7 @@
       AllReference=";@(Reference, ';')"
       OutFiles=";@(HKBU_MMHOOK_RequireGenerate, ';')"
       AssemblyRoot="$(_HKBuildUtils_TaskFolder)"
+      ReferencePath="$(HKBU_MAPICache)"
       />
   </Target>
 

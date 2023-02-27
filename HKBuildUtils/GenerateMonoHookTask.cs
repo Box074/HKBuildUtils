@@ -18,6 +18,8 @@ namespace HKBuildUtils
         [Required]
         public string OutFiles { get; set; } = "";
         [Required]
+        public string ReferencePath { get; set; } = "";
+        [Required]
         public string AssemblyRoot { get; set; } = "";
         public override bool Execute()
         {
@@ -65,13 +67,20 @@ namespace HKBuildUtils
                     continue;
                 }
                 Directory.CreateDirectory(Path.GetDirectoryName(outfile));
-                using(var modder = new MonoModder()
+                using(var modder = new HookModder()
                 { 
                     InputPath = origAsmPath,
                     OutputPath = outfile,
                     ReadingMode = ReadingMode.Deferred
                 })
                 {
+                    foreach(var v in ReferencePath.Split(';'))
+                    {
+                        if(Directory.Exists(v))
+                        {
+                            modder.DependencyDirs.Add(v);
+                        }
+                    }
                     modder.DependencyDirs.Add(AssemblyRoot);
                     modder.Read();
                     modder.MapDependencies();
@@ -84,6 +93,21 @@ namespace HKBuildUtils
                 }
             }
             return true;
+        }
+
+        private class HookModder : MonoModder
+        {
+            private ModuleDefinition? mscorlib;
+            public override TypeReference FindType(string name)
+            {
+                if(mscorlib == null)
+                {
+                    mscorlib = AssemblyResolver.Resolve(new("mscorlib", new()))?.MainModule;
+                }
+                if (mscorlib == null) return FindType(name);
+                
+                return mscorlib.GetType(name) ?? base.FindType(name);
+            }
         }
     }
 }
