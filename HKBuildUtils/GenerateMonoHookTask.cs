@@ -17,6 +17,8 @@ namespace HKBuildUtils
         public string AllReference { get; set; } = "";
         [Required]
         public string OutFiles { get; set; } = "";
+        [Required]
+        public string AssemblyRoot { get; set; } = "";
         public override bool Execute()
         {
             var references = AllReference.Split(';').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -70,6 +72,7 @@ namespace HKBuildUtils
                     ReadingMode = ReadingMode.Deferred
                 })
                 {
+                    modder.DependencyDirs.Add(AssemblyRoot);
                     modder.Read();
                     modder.MapDependencies();
                     HookGenerator hookGenerator = new HookGenerator(modder, Path.GetFileName(outfile));
