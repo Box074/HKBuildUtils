@@ -35,6 +35,10 @@
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
 
+  <UsingTask TaskName="HKBuildUtils.Checker.RemoveInvalidRefHelperTask"
+             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+
   <ItemGroup>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ModResourcesItemGroup"/>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="HKBU_ImportCode"/>

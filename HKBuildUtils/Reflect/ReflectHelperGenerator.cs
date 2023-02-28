@@ -1,3 +1,4 @@
+using HKBuildUtils.Checker;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -25,8 +26,27 @@ namespace HKBuildUtils.Main.Reflect
                 .MainModule.GetType("System.Runtime.CompilerServices.ExtensionAttribute")
                 .Methods.First(x => x.Name == ".ctor"));
         }
-        public void Generate()
+        public void Generate(string origSHA)
         {
+            var md = new TypeDefinition("<HKBUMD>", "Reflect", TypeAttributes.NotPublic)
+            {
+                Fields =
+                {
+                    new("GEN_VER", FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.Literal,
+                        module.TypeSystem.Int32)
+                    {
+                        Constant = RemoveInvalidRefHelperTask.CURRENT_REFHELPER_GENERATOR_VER
+                    },
+                    new(string.IsNullOrEmpty(origSHA) ? "_SHA" : "ORIG_SHA256",
+                         FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.Literal,
+                        module.TypeSystem.String)
+                    {
+                        Constant = origSHA
+                    }
+                }
+            };
+            module.Types.Add(md);
+
             extType = new TypeDefinition("", "ReflectHelperExt", TypeAttributes.Public |
                                                                     TypeAttributes.Class |
                                                                     TypeAttributes.Abstract);

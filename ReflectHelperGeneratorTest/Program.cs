@@ -13,6 +13,6 @@ var generator = new ReflectHelperGenerator(
         AssemblyResolver = searcher,
     }),
     asm.MainModule);
-generator.Generate();
+generator.Generate("");
 
 asm.Write("Test1.dll");

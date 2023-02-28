@@ -11,12 +11,19 @@ namespace Fody.MonoModHookMerge
         {
             foreach(var v in ModuleDefinition.GetAllTypes()
                 .SelectMany(x => x.Methods)
-                .Where(x => x.HasBody)
                 .ToArray())
             {
-                foreach(var il in v.Body.Instructions.ToArray())
+                foreach(var p in v.Parameters)
                 {
-                    TryCheckIH(il, v.Body);
+                    p.ParameterType = ConvertHookDelegate(p.ParameterType, out _);
+                }
+                v.ReturnType = ConvertHookDelegate(v.ReturnType, out _);
+                if (v.HasBody)
+                {
+                    foreach (var il in v.Body.Instructions.ToArray())
+                    {
+                        TryCheckIH(il, v.Body);
+                    }
                 }
             }
         }

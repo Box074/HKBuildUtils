@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace HKBuildUtils.Reflect
@@ -67,7 +68,9 @@ namespace HKBuildUtils.Reflect
                         "ReflectHelper." + origAsm.Name.Name, ModuleKind.Dll))
                     {
                         var generator = new ReflectHelperGenerator(origAsm, helperAsm.MainModule);
-                        generator.Generate();
+                        generator.Generate(BitConverter.ToString(
+                            SHA256.Create().ComputeHash(File.ReadAllBytes(origAsmPath))
+                            ));
                         Directory.CreateDirectory(Path.GetDirectoryName(outfile));
                         helperAsm.Write(outfile);
                     }

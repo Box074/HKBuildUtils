@@ -147,11 +147,15 @@
   <!--Generate ReflectHelper-->
   <Target Name="GenerateReflectHelper" BeforeTargets="BeforeBuild"
           AfterTargets="ResolveModDependencies;ResolveModdingAPI">
+    <RemoveInvalidRefHelperTask
+      AllReference=";@(Reference, ';')"
+      OutFiles=";@(HKBU_ReflectHelperReferences, ';')"
+      />
     <ItemGroup>
       <HKBU_ReflectHelper_RequireGenerate Include="@(HKBU_ReflectHelperReferences->Distinct())"/>
       <HKBU_ReflectHelper_RequireGenerate Remove="@(HKBU_ReflectHelper_RequireGenerate->Exists())"/>
     
-    <HKBU_RequireFody Include="@(HKBU_ReflectHelperReferences)" />
+      <HKBU_RequireFody Include="@(HKBU_ReflectHelperReferences)" />
     </ItemGroup>
     <GenerateReflectHelperTask
       AllReference=";@(Reference, ';')"
