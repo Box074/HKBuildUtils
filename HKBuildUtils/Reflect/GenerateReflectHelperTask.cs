@@ -26,19 +26,19 @@ namespace HKBuildUtils.Reflect
                 return true;
             }
             var outfiles = OutFiles.Split(';').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-            if(outfiles.Length == 0)
+            if (outfiles.Length == 0)
             {
                 return true;
             }
             var resovler = new DefaultAssemblyResolver();
-            foreach(var v in references)
+            foreach (var v in references)
             {
                 if (!File.Exists(v)) continue;
                 resovler.AddSearchDirectory(Path.GetDirectoryName(v));
             }
             foreach (var outfile in outfiles)
             {
-                if(string.IsNullOrEmpty(outfile)) continue;
+                if (string.IsNullOrEmpty(outfile)) continue;
 
                 var asmName = Path.GetFileNameWithoutExtension(outfile);
                 if (!asmName.StartsWith("ReflectHelper.")) continue;
@@ -60,20 +60,19 @@ namespace HKBuildUtils.Reflect
                 }
 
                 using (var origAsm = AssemblyDefinition.ReadAssembly(origAsmPath, new()
-                { 
-                    AssemblyResolver= resovler
+                {
+                    AssemblyResolver = resovler
                 }))
                 {
-                    using(var helperAsm = AssemblyDefinition.CreateAssembly(new("ReflectHelper." + origAsm.Name.Name, new()),
-                        "ReflectHelper." + origAsm.Name.Name, ModuleKind.Dll))
-                    {
-                        var generator = new ReflectHelperGenerator(origAsm, helperAsm.MainModule);
-                        generator.Generate(BitConverter.ToString(
-                            SHA256.Create().ComputeHash(File.ReadAllBytes(origAsmPath))
-                            ));
-                        Directory.CreateDirectory(Path.GetDirectoryName(outfile));
-                        helperAsm.Write(outfile);
-                    }
+                    var origName = new AssemblyNameReference(origAsm.Name.Name, origAsm.Name.Version);
+                    origAsm.Name.Name = "ReflectHelper." + origAsm.Name.Name;
+                    var generator = new ReflectHelperGenerator(origAsm);
+                    generator.Generate(BitConverter.ToString(
+                        SHA256.Create().ComputeHash(File.ReadAllBytes(origAsmPath))
+                        ), origName);
+                    Directory.CreateDirectory(Path.GetDirectoryName(outfile));
+                    origAsm.Write(outfile);
+
                 }
             }
 

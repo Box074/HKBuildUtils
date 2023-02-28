@@ -57,7 +57,7 @@ namespace Fody.ReflectHelper
                         {
                             if(il.OpCode == OpCodes.Call && il.Operand is MethodReference mr)
                             {
-                                if(mr.Name == "Reflect")
+                                if(mr.Name == "Reflect" || mr.Name == "ToOriginal")
                                 {
                                     if(IsDefinedInReflectHelper(mr.DeclaringType) && 
                                         mr.DeclaringType.Name == "ReflectHelperExt")
@@ -116,10 +116,14 @@ namespace Fody.ReflectHelper
             foreach(var tr in ModuleDefinition.GetTypeReferences())
             {
                 if (!IsDefinedInReflectHelper(tr) || tr.IsArray || tr.IsGenericInstance || tr.IsPointer) continue;
+                if (tr.Name == "ReflectHelperExt") continue;
                 var td = tr.Resolve();
-                if (td.BaseType != null)
+                var originalType = td.Methods.FirstOrDefault(x => x.Name == "__HKBU__ORIGINAL_TYPE__")
+                    ?.Body.Instructions
+                    .FirstOrDefault(x => x.OpCode == OpCodes.Ldtoken && x.Operand is TypeReference);
+                if (originalType != null)
                 {
-                    var srcType = ModuleDefinition.ImportReference(td.BaseType);
+                    var srcType = ModuleDefinition.ImportReference((TypeReference) originalType.Operand);
                     tr.Name = srcType.Name;
                     tr.Scope = srcType.Scope;
                     tr.Namespace = srcType.Namespace;

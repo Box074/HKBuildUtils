@@ -12,7 +12,7 @@ namespace HKBuildUtils.Checker
 {
     public class RemoveInvalidRefHelperTask : Task
     {
-        public const int CURRENT_REFHELPER_GENERATOR_VER = 3;
+        public const int CURRENT_REFHELPER_GENERATOR_VER = 10;
 
         [Required]
         public string AllReference { get; set; } = "";
@@ -60,30 +60,30 @@ namespace HKBuildUtils.Checker
                     using (var ad = AssemblyDefinition.ReadAssembly(ms))
                     {
                         var md = ad.MainModule.GetType("<HKBUMD>.Reflect");
-                        if(md == null)
+                        if (md == null)
                         {
                             Log.LogWarning($"Reflect Metadata not found.({outfile})");
                             File.Delete(outfile);
                             continue;
                         }
                         var ver = md.Fields.FirstOrDefault(x => x.Name == "GEN_VER" && x.IsLiteral)?.Constant as int?;
-                        if(ver == null)
+                        if (ver == null)
                         {
                             Log.LogWarning($"Reflect Helper is too old.({outfile})");
                             File.Delete(outfile);
                             continue;
                         }
-                        if(ver.Value < CURRENT_REFHELPER_GENERATOR_VER)
+                        if (ver.Value < CURRENT_REFHELPER_GENERATOR_VER)
                         {
                             Log.LogWarning($"Reflect Helper is too old({ver.Value}->{CURRENT_REFHELPER_GENERATOR_VER}).({outfile})");
                             File.Delete(outfile);
                             continue;
                         }
                         var oSHA = md.Fields.FirstOrDefault(x => x.Name == "ORIG_SHA256" && x.IsLiteral)?.Constant as string;
-                        if(oSHA != null)
+                        if (oSHA != null)
                         {
                             var data = File.ReadAllBytes(origAsmPath);
-                            if(!BitConverter.ToString(SHA256.Create().ComputeHash(data))
+                            if (!BitConverter.ToString(SHA256.Create().ComputeHash(data))
                                 .Equals(oSHA, StringComparison.OrdinalIgnoreCase))
                             {
                                 Log.LogWarning($"Reflect Helper is not match orig assembly({ver.Value}->{CURRENT_REFHELPER_GENERATOR_VER}).({outfile})");
@@ -92,11 +92,13 @@ namespace HKBuildUtils.Checker
                             }
                         }
                     }
-                }catch(BadImageFormatException)
+                }
+                catch (BadImageFormatException)
                 {
                     Log.LogWarning($"Failed to load assembly {outfile}");
                     File.Delete(outfile);
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Log.LogErrorFromException(ex);
                     File.Delete(outfile);
