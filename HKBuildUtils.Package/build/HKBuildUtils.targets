@@ -228,7 +228,7 @@
       <OutputZipSHA256>@(HKBU_Output_SHA256 -> '%(FileHash)')</OutputZipSHA256>
     </PropertyGroup>
   </Target>
-
+   <!--
   <Target Name="GenerateReleaseInfo" AfterTargets="PackOutputMod"
           Condition="$(OnlySHAInReleaseInfo) != true">
     <GenerateReleaseInfoTask
@@ -236,9 +236,9 @@
       ZipSHA="$(OutputZipSHA256)"
       ProjectDir="$(ProjectDir)"
       />
-  </Target>
+  </Target>-->
   <Target Name="GenerateReleaseInfoOnlySHA" AfterTargets="PackOutputMod"
-          Condition="$(OnlySHAInReleaseInfo) == true">
+          >
 
     <WriteLinesToFile File="$(ReleaseInfoPath)"
                       Overwrite="true"

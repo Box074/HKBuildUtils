@@ -7,6 +7,16 @@ A nuget package to help make the Hollow Knight Mod
 
 ## Features
 
+### Automatically Pack Mods
+
+Automatically pack the mod into a zip file and calculate the SHA256 value after the build.
+
+#### Configuration
+
+- `$(ExportDir)`: Specifies the directory for the packaged output. Defaults to "$(ProjectDir)\bin\Publish\"
+- `$(PublishZipPath)`: Specify the save path of the ZIP output after packaging. Defaults to "$(ExportDir)\Publish.zip"
+- `$(ReleaseInfoPath)`: Specifies the output location of the ReleaseInfo information constructed after packaging. Currently, only SHA256 is included. Default is "$([System.IO.Path]::GetDirectoryName('$(PublishZipPath)'))\ReleaseInfo.txt"
+
 ### Mods References Helper
 
 Automatically download HKMAPI and other mods that depend on it when building.
@@ -88,7 +98,7 @@ Advantage:
 - Has most of the private types
 - Custom operator operations with primitive types
 - Primitive object instances can be created directly using `new`. For example, `new ModInstanceR()` will create an instance of `ModLoader.ModInstance`
-- Can be converted to and from primitive types
+- Supports generics
 
 
 ### Mono Mod Hooks Helper

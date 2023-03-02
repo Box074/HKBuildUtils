@@ -49,9 +49,6 @@ namespace HKBuildUtils.ReleaseInfo
 
                     writer.WriteLine($"Compare: {prevTagSHA}...{curTagSHA}");
                 }
-                writer.WriteLine();
-                writer.WriteLine("Release Info");
-                writer.WriteLine("----");
                 
             }
             
