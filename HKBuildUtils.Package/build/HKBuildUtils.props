@@ -9,36 +9,39 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     
-    <LangVersion>11</LangVersion>
+    <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
-  <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask"
-             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
-             />
-  <UsingTask TaskName="HKBuildUtils.CheckFodyTask"
-             AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
-             />
+  <!--Mono Hook Generator-->
   <UsingTask TaskName="HKBuildUtils.GenerateMonoHookTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
+  <!--ModDep-->
   <UsingTask TaskName="HKBuildUtils.ModDep.ResovleModDependenciesTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
   <UsingTask TaskName="HKBuildUtils.ModDep.SetupModdingAPITask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
+  <!--Reflect Helper-->
   <UsingTask TaskName="HKBuildUtils.Reflect.GenerateReflectHelperTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
-
+  <!--Checker-->
   <UsingTask TaskName="HKBuildUtils.Checker.RemoveInvalidRefHelperTask"
              AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
              />
-
+  <UsingTask TaskName="HKBuildUtils.Checker.CheckFodyTask"
+               AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
+  <!--Release Info-->
+  <UsingTask TaskName="HKBuildUtils.ReleaseInfo.GenerateReleaseInfoTask"
+               AssemblyFile="$(_HKBuildUtils_TaskAssembly)"
+             />
   <ItemGroup>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ModResourcesItemGroup"/>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="HKBU_ImportCode"/>

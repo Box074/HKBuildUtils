@@ -9,22 +9,39 @@ namespace Fody.MonoModHookMerge
     {
         public override void Execute()
         {
-            foreach(var v in ModuleDefinition.GetAllTypes()
-                .SelectMany(x => x.Methods)
-                .ToArray())
+            foreach (var t in ModuleDefinition.GetAllTypes().ToArray())
             {
-                foreach(var p in v.Parameters)
+                foreach (var v in t.Methods)
                 {
-                    p.ParameterType = ConvertHookDelegate(p.ParameterType, out _);
-                }
-                v.ReturnType = ConvertHookDelegate(v.ReturnType, out _);
-                if (v.HasBody)
-                {
-                    foreach (var il in v.Body.Instructions.ToArray())
+                    foreach (var p in v.Parameters)
                     {
-                        TryCheckIH(il, v.Body);
+                        p.ParameterType = ConvertHookDelegate(p.ParameterType, out _);
+                    }
+                    v.ReturnType = ConvertHookDelegate(v.ReturnType, out _);
+                    if (v.HasBody)
+                    {
+                        foreach (var il in v.Body.Instructions.ToArray())
+                        {
+                            TryCheckIH(il, v.Body);
+                        }
                     }
                 }
+                foreach(var f in t.Fields)
+                {
+                    f.FieldType = ConvertHookDelegate(f.FieldType, out _);
+                }
+                foreach(var ev in t.Events)
+                {
+                    ev.EventType = ConvertHookDelegate(ev.EventType, out _);
+                }
+                foreach(var p in t.Properties)
+                {
+                    p.PropertyType = ConvertHookDelegate(p.PropertyType, out _);
+                }
+            }
+            foreach(var v in ModuleDefinition.AssemblyReferences.ToArray())
+            {
+                if(v.Name.StartsWith("MMHOOK.")) ModuleDefinition.AssemblyReferences.Remove(v);
             }
         }
 

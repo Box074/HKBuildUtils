@@ -81,6 +81,20 @@ namespace HKBuildUtils.Main.Reflect
                         new(srcType)
                     }
             };
+            if(td.HasGenericParameters)
+            {
+                var grs = new GenericInstanceType(srcType);
+                var grd = new GenericInstanceType(td);
+                for(int i = 0; i < td.GenericParameters.Count; i++)
+                {
+                    var gt = new GenericParameter(orig2R);
+                    orig2R.GenericParameters.Add(gt);
+                    grs.GenericArguments.Add(gt);
+                    grd.GenericArguments.Add(gt);
+                }
+                orig2R.Parameters[0].ParameterType = grs;
+                orig2R.ReturnType = grd;
+            }
             var R2orig = new MethodDefinition("ToOriginal", MethodAttributes.Public | MethodAttributes.Static,
                srcType)
             {
@@ -93,6 +107,20 @@ namespace HKBuildUtils.Main.Reflect
                         new(td)
                     }
             };
+            if (td.HasGenericParameters)
+            {
+                var grs = new GenericInstanceType(srcType);
+                var grd = new GenericInstanceType(td);
+                for (int i = 0; i < td.GenericParameters.Count; i++)
+                {
+                    var gt = new GenericParameter(R2orig);
+                    R2orig.GenericParameters.Add(gt);
+                    grs.GenericArguments.Add(gt);
+                    grd.GenericArguments.Add(gt);
+                }
+                R2orig.Parameters[0].ParameterType = grd;
+                R2orig.ReturnType = grs;
+            }
 
             extType.Methods.Add(R2orig);
             extType.Methods.Add(orig2R);

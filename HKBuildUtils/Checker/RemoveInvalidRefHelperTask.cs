@@ -12,7 +12,7 @@ namespace HKBuildUtils.Checker
 {
     public class RemoveInvalidRefHelperTask : Task
     {
-        public const int CURRENT_REFHELPER_GENERATOR_VER = 10;
+        public const int CURRENT_REFHELPER_GENERATOR_VER = 11;
 
         [Required]
         public string AllReference { get; set; } = "";

@@ -6,6 +6,14 @@
     <HKBU_HKPath_Path Condition="$(HKBU_HKPath_Path) == ''">$([MSBuild]::GetPathOfFileAbove('HollowKnightRefs.txt', '$(ProjectDir)'))</HKBU_HKPath_Path>
     <HollowKnightRefs Condition="$(HKBU_HKPath_Path) != ''">$([System.IO.File]::ReadAllText('$(HKBU_HKPath_Path)'))</HollowKnightRefs>
   </PropertyGroup>
+  
+  <!--Output Properties-->
+  <PropertyGroup>
+    <ExportDir Condition="'$(ExportDir)' == ''">$(ProjectDir)\bin\Publish\</ExportDir>
+    <PublishZipPath Condition="'$(PublishZipPath)' == ''">$(ExportDir)\Publish.zip</PublishZipPath>
+    <ReleaseInfoPath Condition="'$(ReleaseInfoPath)' == ''">$([System.IO.Path]::GetDirectoryName('$(PublishZipPath)'))\ReleaseInfo.txt</ReleaseInfoPath>
+    <OnlySHAInReleaseInfo Condition="'$(OnlySHAInReleaseInfo)' == ''">false</OnlySHAInReleaseInfo>
+  </PropertyGroup>
 
   <!--Mod Resources-->
   <ItemGroup>
@@ -192,6 +200,51 @@
   
     <CheckFodyTask AllPackages="$(HKBU_Fody_Reference)" />
 
+  </Target>
+
+  <Target Name="PackOutputMod" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      
+    </PropertyGroup>
+    <ItemGroup>
+      <OutputFiles Include="$(TargetName).pdb;$(TargetName).dll" />
+      <HKBU_OF_0 Include="@(OutputFiles->Distinct())" />
+      <HKBU_OutputFiles Include="@(HKBU_OF_0 -> '$(TargetDir)\%(Identity)')" />
+    </ItemGroup>
+
+    <RemoveDir Directories="$(ExportDir)" />
+    <MakeDir Directories="$(ExportDir)" />
+    <MakeDir Directories="$(ExportDir)\unpack\" />
+    <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(ExportDir)" />
+    <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(ExportDir)\unpack\" />
+    <ZipDirectory SourceDirectory="$(ExportDir)\unpack\" DestinationFile="$(PublishZipPath)" 
+                  Overwrite="true" />
+    <RemoveDir Directories="$(ExportDir)\unpack\" />
+    <GetFileHash Files="$(PublishZipPath)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="HKBU_Output_SHA256"/>
+    </GetFileHash>
+
+    <PropertyGroup>
+      <OutputZipSHA256>@(HKBU_Output_SHA256 -> '%(FileHash)')</OutputZipSHA256>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="GenerateReleaseInfo" AfterTargets="PackOutputMod"
+          Condition="$(OnlySHAInReleaseInfo) != true">
+    <GenerateReleaseInfoTask
+      Output="$(ReleaseInfoPath)"
+      ZipSHA="$(OutputZipSHA256)"
+      ProjectDir="$(ProjectDir)"
+      />
+  </Target>
+  <Target Name="GenerateReleaseInfoOnlySHA" AfterTargets="PackOutputMod"
+          Condition="$(OnlySHAInReleaseInfo) == true">
+
+    <WriteLinesToFile File="$(ReleaseInfoPath)"
+                      Overwrite="true"
+                      Lines="SHA256: $(OutputZipSHA256)"
+                      Encoding="UTF-8"
+                      />
   </Target>
 
 </Project>

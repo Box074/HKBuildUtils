@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HKBuildUtils
+namespace HKBuildUtils.Checker
 {
     public class CheckFodyTask : Task
     {

@@ -52,7 +52,13 @@ public partial class ModuleWeaver
     private TypeReference ConvertHookDelegate(TypeReference tr, out bool replaced)
     {
         replaced = false;
-        tr = ModuleDefinition.ImportReference(tr);
+        try
+        {
+            tr = ModuleDefinition.ImportReference(tr);
+        }catch(Exception)
+        {
+
+        }
 
         if (!tr.FullName.StartsWith("On")) return tr;
         var td = tr.Resolve();

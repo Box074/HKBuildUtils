@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Version>0.4.63</Version>
+    <Version>0.4.76</Version>
     <LangVersion>11</LangVersion>
 
     <IsPackable>false</IsPackable>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\HKBuildUtils.snk</AssemblyOriginatorKeyFile>
+
+    <NoWarn>CS8002</NoWarn>
   </PropertyGroup>
 </Project>
