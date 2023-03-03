@@ -54,7 +54,7 @@ HKBuildUtils will look for the game directory in the following order
 
 ### Reflect Helper
 
-Used to replace the Reflect Helper  of HKMirror
+Used to replace the Reflect Helper of HKMirror
 
 Allows developers to directly access private fields and private types
 
