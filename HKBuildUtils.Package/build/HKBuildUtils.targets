@@ -97,8 +97,6 @@
       <HKBU_RequireMods Include="@(ModReference->Distinct())" />
     </ItemGroup>
     <Message Importance="high"
-             Text="Reference: @(HKBU_LibraryReferences)"></Message>
-    <Message Importance="high"
              Text="Require Mods: @(HKBU_RequireMods)"></Message>
 
     <ResovleModDependenciesTask LibraryCache="$(HKBU_LibraryModCache)"
@@ -245,6 +243,16 @@
                       Lines="SHA256: $(OutputZipSHA256)"
                       Encoding="UTF-8"
                       />
+  </Target>
+  <Target Name="CopyToModsFolderDev" 
+          AfterTargets="PackOutputMod"
+          Condition="$(HKBU_UseLocalMod) == true and '$(ModName)' != '' and '$(Configuration)' == 'Debug'"
+          >
+    <PropertyGroup>
+      <HKBU_ModFolderPath>$(HKBU_LibraryModCache)\$(ModName)</HKBU_ModFolderPath>
+    </PropertyGroup>
+    <MakeDir Directories="$(HKBU_ModFolderPath)" />
+    <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(HKBU_ModFolderPath)" />
   </Target>
 
 </Project>

@@ -52,6 +52,7 @@ public partial class ModuleWeaver
     private TypeReference ConvertHookDelegate(TypeReference tr, out bool replaced)
     {
         replaced = false;
+        if (tr.FullName.StartsWith("<>MD_")) return tr;
         try
         {
             tr = ModuleDefinition.ImportReference(tr);
@@ -82,7 +83,7 @@ public partial class ModuleWeaver
     {
         var md = ModuleDefinition;
         TypeDefinition del = new TypeDefinition(
-            null, "MD_" + invokeMethod.DeclaringType.Name + "|" + (id++),
+            null, "<>MD_" + invokeMethod.DeclaringType.Name + "|" + (id++),
             TypeAttributes.NotPublic | TypeAttributes.Sealed | TypeAttributes.Class,
             md.ImportReference(FindTypeDefinition("System.MulticastDelegate"))
         );

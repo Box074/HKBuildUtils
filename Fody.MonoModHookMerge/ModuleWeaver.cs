@@ -24,6 +24,10 @@ namespace Fody.MonoModHookMerge
                         {
                             TryCheckIH(il, v.Body);
                         }
+                        foreach(var lv in v.Body.Variables)
+                        {
+                            lv.VariableType = ConvertHookDelegate(lv.VariableType, out _);
+                        }
                     }
                 }
                 foreach(var f in t.Fields)
