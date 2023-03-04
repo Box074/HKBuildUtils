@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.Serialization;
@@ -15,6 +16,9 @@ namespace HKBuildUtils.ModDep
     {
         [Required]
         public string LibraryCache { get; set; } = "";
+        [Output]
+        public ITaskItem[] OutputAllDlls { get; set; } = new ITaskItem[0];
+        public ITaskItem[] IgnoreFiles { get; set; } = null!;
         public string VanillaURL { get; set; } = "";
         public override bool Execute()
         {
@@ -25,7 +29,7 @@ namespace HKBuildUtils.ModDep
                 Log.LogMessage("Skip download ModdingAPI");
                 return true;
             }
-
+            List<ITaskItem> outputDlls = new();
             var apilinkReponse = WebRequest.Create(@"https://github.com/hk-modding/modlinks/raw/main/ApiLinks.xml")
                 .GetResponse();
             ApiLinks apiLinks;
@@ -52,11 +56,25 @@ namespace HKBuildUtils.ModDep
                 {
                     foreach (var v in zip.Entries)
                     {
-                        var path = Path.Combine(LibraryCache, v.FullName);
+                        var fn = Path.GetFileName(v.FullName);
+                        
+                        var path = Path.GetFullPath(Path.Combine(LibraryCache, v.FullName));
                         var dir = Path.GetDirectoryName(path);
                         Directory.CreateDirectory(dir);
 
                         v.ExtractToFile(path, true);
+                        
+                        if(IgnoreFiles != null)
+                        {
+                            if (IgnoreFiles.Any(x => x.ItemSpec?.Equals(fn, StringComparison.OrdinalIgnoreCase) ?? false))
+                            {
+                                continue;
+                            }
+                        }
+                        if(path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                        {
+                            outputDlls.Add(new TaskItem(path));
+                        }
                     }
                 }
             }

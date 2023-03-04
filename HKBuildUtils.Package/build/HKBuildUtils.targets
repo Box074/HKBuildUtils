@@ -59,10 +59,10 @@
     <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
     
     <!--Modding API-->
-    <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"/>
+    <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll" Exclude="@(MonoModHook-> '$(HKBU_MAPICache)\MMHOOK_%(Identity).dll');@(MAPIExcludeFiles-> '$(HKBU_MAPICache)\%(Identity).dll')"/>
     <Reference Include="@(HKBU_MAPIFiles)"/>
-    <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
-    <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)/%(Identity).dll')" />
+    <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)\MMHOOK_%(Identity).dll')" />
+    <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)\%(Identity).dll')" />
     
     <!--Reflect Helper-->
     <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
@@ -94,7 +94,7 @@
     <MergeHKBULibTask ModOutput="$(TargetPath)"></MergeHKBULibTask>
   </Target>-->
 
-  <Target Name="ResolveModDependencies" BeforeTargets="BeforeBuild">
+  <Target Name="ResolveModDependencies" AfterTargets="ResolveModdingAPI">
     <ItemGroup>
       <HKBU_RequireMods Include="@(ModReference->Distinct())" />
     </ItemGroup>
@@ -132,8 +132,10 @@
     </PropertyGroup>
     <SetupModdingAPITask LibraryCache="$(HKBU_MAPICache)"
                          VanillaURL="$(VanillaURL)"
-                                Condition="$(HKBU_UseLocalMod) != true and $(HKBU_SkipSetupModdingAPI) != true"
+                         Condition="$(HKBU_UseLocalMod) != true and $(HKBU_SkipSetupModdingAPI) != true"
+                         IgnoreFiles="@(MonoModHook-> 'MMHOOK_%(Identity).dll')"
                          >
+      <Output TaskParameter="OutputAllDlls" ItemName="HKBU_Output_MAPI_Dlls"/>
     </SetupModdingAPITask>
     <Message Text="Skip download Modding API"
              Importance="high"
@@ -142,19 +144,22 @@
              Text="Use the modding api folder: $(HKBU_MAPICache)"
              Importance="high"></Message>
     <ItemGroup>
-      <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
-      <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
-      <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)/%(Identity).dll')" />
+      <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll" Exclude="@(MonoModHook-> '$(HKBU_MAPICache)\MMHOOK_%(Identity).dll');@(MAPIExcludeFiles-> '$(HKBU_MAPICache)\%(Identity).dll')"/>
+      <Reference Include="@(HKBU_MAPIFiles)" />
+      <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)\MMHOOK_%(Identity).dll')" />
+      <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)\%(Identity).dll')" />
     </ItemGroup>
     <Message
              Condition="$(Configuration) == 'Release'"
              Text="Reference Modding API Dlls: @(HKBU_MAPIFiles, '&#10;')"
              Importance="high"></Message>
   </Target>
+ 
   
   <!--Generate ReflectHelper-->
-  <Target Name="GenerateReflectHelper" BeforeTargets="BeforeBuild"
-          AfterTargets="ResolveModDependencies;ResolveModdingAPI">
+  <Target Name="GenerateReflectHelper"
+          BeforeTargets="BeforeBuild"
+          AfterTargets="ResolveModDependencies">
     <RemoveInvalidRefHelperTask
       AllReference=";@(Reference, ';')"
       OutFiles=";@(HKBU_ReflectHelperReferences, ';')"
@@ -165,15 +170,20 @@
     
       <HKBU_RequireFody Include="@(HKBU_ReflectHelperReferences)" />
     </ItemGroup>
+    <Message
+             Condition="$(Configuration) == 'Release'"
+             Text="Reference Dlls: @(Reference, '&#10;')"
+             Importance="high"></Message>
     <GenerateReflectHelperTask
-      AllReference=";@(Reference, ';')"
+      AllReference=";@(Reference, ';');$(HKBU_MAPICache);"
       OutFiles=";@(HKBU_ReflectHelper_RequireGenerate, ';')"
       />
   </Target>
 
   <!--Generate MonoMod Hooks-->
-  <Target Name="GenerateMonoModHooks" BeforeTargets="BeforeBuild"
-          AfterTargets="ResolveModDependencies;ResolveModdingAPI"
+  <Target Name="GenerateMonoModHooks"
+          BeforeTargets="BeforeBuild"
+          AfterTargets="ResolveModDependencies"
           >
     <ItemGroup>
       <HKBU_MMHOOK_RequireGenerate Include="@(HKBU_MMHooksReferences->Distinct())"/>
@@ -182,7 +192,7 @@
       <HKBU_RequireFody Include="@(HKBU_MMHooksReferences)" />
     </ItemGroup>
     <GenerateMonoHookTask
-      AllReference=";@(Reference, ';')"
+      AllReference=";@(Reference, ';');$(HKBU_MAPICache);"
       OutFiles=";@(HKBU_MMHOOK_RequireGenerate, ';')"
       AssemblyRoot="$(_HKBuildUtils_TaskFolder)"
       ReferencePath="$(HKBU_MAPICache)"

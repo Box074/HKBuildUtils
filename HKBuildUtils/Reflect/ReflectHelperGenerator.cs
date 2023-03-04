@@ -24,6 +24,9 @@ namespace HKBuildUtils.Main.Reflect
                 .Resolve(new AssemblyNameReference("mscorlib", new())))
                 .MainModule.GetType("System.Runtime.CompilerServices.ExtensionAttribute")
                 .Methods.First(x => x.Name == ".ctor"));
+            //extAttrCtor = module.ImportReference(new MethodReference(".ctor", 
+            //    module.TypeSystem.Void, new("System.Runtime.CompilerServices", "ExtensionAttribute", null,
+            //    new AssemblyNameReference("mscorlib", new()))));
         }
         public void Generate(string origSHA, AssemblyNameReference origAssembly)
         {

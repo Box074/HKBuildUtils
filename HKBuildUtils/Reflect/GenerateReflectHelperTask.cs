@@ -15,6 +15,7 @@ namespace HKBuildUtils.Reflect
     {
         [Required]
         public string AllReference { get; set; } = "";
+        
         [Required]
         public string OutFiles { get; set; } = "";
         public override bool Execute()
@@ -33,6 +34,11 @@ namespace HKBuildUtils.Reflect
             var resovler = new DefaultAssemblyResolver();
             foreach (var v in references)
             {
+                if(Directory.Exists(v))
+                {
+                    resovler.AddSearchDirectory(v);
+                    continue;
+                }
                 if (!File.Exists(v)) continue;
                 resovler.AddSearchDirectory(Path.GetDirectoryName(v));
             }
