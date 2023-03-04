@@ -41,10 +41,8 @@ namespace Fody.MonoModHookMerge
                 var asmr = rt.Scope as AssemblyNameReference;
                 if(asmr is null) continue;
                 var asmn = asmr.Name;
-                WriteWarning($"Try RedirectTT({asmn}):: {rt0.FullName}");
                 if (!asmn.StartsWith("MMHOOK_", StringComparison.OrdinalIgnoreCase) &&
                     !asmn.StartsWith("MMHOOK.", StringComparison.OrdinalIgnoreCase)) continue;
-                WriteWarning($"Try Redirect:: {rt0.FullName}");
                 var ctd = ConvertHookDelegate(rt0, out var replaced);
                 if (!replaced) continue;
 
@@ -55,8 +53,6 @@ namespace Fody.MonoModHookMerge
                     ModuleDefinition.AssemblyReferences.Add(refself);
                 }
                
-                WriteWarning($"Redirect: {rt0.FullName}->{ctd.FullName}");
-                
                 rt0.DeclaringType = null;
                 rt0.Scope = refself;
                 rt0.Namespace = ctd.Namespace;

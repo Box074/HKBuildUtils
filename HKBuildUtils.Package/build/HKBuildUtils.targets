@@ -59,8 +59,10 @@
     <Reference Include="@(HKBU_LibraryReferences->Distinct()->Exists())" />
     
     <!--Modding API-->
-    <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
+    <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"/>
     <Reference Include="@(HKBU_MAPIFiles)"/>
+    <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
+    <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)/%(Identity).dll')" />
     
     <!--Reflect Helper-->
     <HKBU_ReflectHelperReferences Include="@(ReflectHelper-> '$(HKBU_BinTempPath)/ReflectHelper.%(Identity).dll')" />
@@ -141,8 +143,8 @@
              Importance="high"></Message>
     <ItemGroup>
       <HKBU_MAPIFiles Include="$(HKBU_MAPICache)\*.dll"></HKBU_MAPIFiles>
-      <Reference Include="@(HKBU_MAPIFiles)"/>
       <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
+      <Reference Remove="@(MAPIExcludeFiles-> '$(HKBU_MAPICache)/%(Identity).dll')" />
     </ItemGroup>
     <Message
              Condition="$(Configuration) == 'Release'"
