@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Rocks;
+﻿using Mono.Cecil;
+using Mono.Cecil.Rocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,45 +8,84 @@ namespace Fody.MonoModHookMerge
 {
     public partial class ModuleWeaver : BaseModuleWeaver
     {
+        private TypeReference GetRootType(TypeReference tr)
+        {
+            while(true)
+            {
+                if (tr.DeclaringType == null) return tr;
+                tr = tr.DeclaringType;
+            }
+        }
         public override void Execute()
         {
             foreach (var t in ModuleDefinition.GetAllTypes().ToArray())
             {
                 foreach (var v in t.Methods)
                 {
-                    foreach (var p in v.Parameters)
-                    {
-                        p.ParameterType = ConvertHookDelegate(p.ParameterType, out _);
-                    }
-                    v.ReturnType = ConvertHookDelegate(v.ReturnType, out _);
                     if (v.HasBody)
                     {
                         foreach (var il in v.Body.Instructions.ToArray())
                         {
                             TryCheckIH(il, v.Body);
                         }
-                        foreach(var lv in v.Body.Variables)
-                        {
-                            lv.VariableType = ConvertHookDelegate(lv.VariableType, out _);
-                        }
                     }
                 }
-                foreach(var f in t.Fields)
-                {
-                    f.FieldType = ConvertHookDelegate(f.FieldType, out _);
-                }
-                foreach(var ev in t.Events)
-                {
-                    ev.EventType = ConvertHookDelegate(ev.EventType, out _);
-                }
-                foreach(var p in t.Properties)
-                {
-                    p.PropertyType = ConvertHookDelegate(p.PropertyType, out _);
-                }
             }
-            foreach(var v in ModuleDefinition.AssemblyReferences.ToArray())
+            
+            AssemblyNameReference refself = null; 
+            _RE_CHECK:
+            foreach(var rt0 in ModuleDefinition.GetTypeReferences().ToArray())
             {
-                if(v.Name.StartsWith("MMHOOK.")) ModuleDefinition.AssemblyReferences.Remove(v);
+                if (rt0 is TypeSpecification || rt0.HasGenericParameters) continue;
+                var rt = GetRootType(rt0);
+                var asmr = rt.Scope as AssemblyNameReference;
+                if(asmr is null) continue;
+                var asmn = asmr.Name;
+                WriteWarning($"Try RedirectTT({asmn}):: {rt0.FullName}");
+                if (!asmn.StartsWith("MMHOOK_", StringComparison.OrdinalIgnoreCase) &&
+                    !asmn.StartsWith("MMHOOK.", StringComparison.OrdinalIgnoreCase)) continue;
+                WriteWarning($"Try Redirect:: {rt0.FullName}");
+                var ctd = ConvertHookDelegate(rt0, out var replaced);
+                if (!replaced) continue;
+
+                if(refself == null)
+                {
+                    refself = new AssemblyNameReference(ModuleDefinition.Assembly.Name.Name, 
+                                ModuleDefinition.Assembly.Name.Version);
+                    ModuleDefinition.AssemblyReferences.Add(refself);
+                }
+               
+                WriteWarning($"Redirect: {rt0.FullName}->{ctd.FullName}");
+                
+                rt0.DeclaringType = null;
+                rt0.Scope = refself;
+                rt0.Namespace = ctd.Namespace;
+                rt0.Name = ctd.Name;
+            }
+            foreach(var rt0 in ModuleDefinition.GetTypeReferences())
+            {
+                if (rt0 is TypeSpecification || rt0.HasGenericParameters) continue;
+                if (!rt0.Name.StartsWith("hook_") && 
+                    !rt0.Name.StartsWith("orig_")) continue;
+
+                var rt = GetRootType(rt0);
+                var asmr = rt.Scope as AssemblyNameReference;
+                if (asmr is null) continue;
+                var asmn = asmr.Name;
+                if (!asmn.StartsWith("MMHOOK_", StringComparison.OrdinalIgnoreCase) &&
+                    !asmn.StartsWith("MMHOOK.", StringComparison.OrdinalIgnoreCase)) continue;
+                goto _RE_CHECK;
+            }
+            foreach (var v in ModuleDefinition.AssemblyReferences.ToArray())
+            {
+                if (v.Name.StartsWith("MMHOOK.") || v.Name.StartsWith("MMHOOK_"))
+                {
+                    v.Culture = "neutral";
+                    v.PublicKey = null;
+                    v.HasPublicKey = false;
+                    v.Name = ModuleDefinition.Assembly.Name.Name;
+                    v.Version = ModuleDefinition.Assembly.Name.Version;
+                }
             }
         }
 

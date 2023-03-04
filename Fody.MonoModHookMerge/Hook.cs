@@ -53,15 +53,6 @@ public partial class ModuleWeaver
     {
         replaced = false;
         if (tr.FullName.StartsWith("<>MD_")) return tr;
-        try
-        {
-            tr = ModuleDefinition.ImportReference(tr);
-        }catch(Exception)
-        {
-
-        }
-
-        if (!tr.FullName.StartsWith("On")) return tr;
         var td = tr.Resolve();
 
 
@@ -79,16 +70,28 @@ public partial class ModuleWeaver
         replaced = true;
         return rt;
     }
+    private TypeReference ImportSafe(TypeReference tr)
+    {
+        if(tr.Name.StartsWith("orig_"))
+        {
+            return ConvertHookDelegate(tr, out _);
+        }
+        if (delegateMap.TryGetValue(tr.FullName, out var val))
+        {
+            return val;
+        }
+        return ModuleDefinition.ImportReference(tr);
+    }
     private TypeDefinition GenerateDelegate(MethodDefinition invokeMethod)
     {
         var md = ModuleDefinition;
-        TypeDefinition del = new TypeDefinition(
+        TypeDefinition del = new(
             null, "<>MD_" + invokeMethod.DeclaringType.Name + "|" + (id++),
             TypeAttributes.NotPublic | TypeAttributes.Sealed | TypeAttributes.Class,
-            md.ImportReference(FindTypeDefinition("System.MulticastDelegate"))
+            ImportSafe(FindTypeDefinition("System.MulticastDelegate"))
         );
         md.Types.Add(del);
-        MethodDefinition ctor = new MethodDefinition(
+        MethodDefinition ctor = new(
             ".ctor",
             MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.ReuseSlot,
             md.TypeSystem.Void
@@ -105,7 +108,7 @@ public partial class ModuleWeaver
         MethodDefinition invoke = new MethodDefinition(
             "Invoke",
             MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.NewSlot,
-            ConvertHookDelegate(invokeMethod.ReturnType, out _)
+            ImportSafe(invokeMethod.ReturnType)
         )
         {
             ImplAttributes = MethodImplAttributes.Runtime | MethodImplAttributes.Managed,
@@ -115,7 +118,7 @@ public partial class ModuleWeaver
             invoke.Parameters.Add(new ParameterDefinition(
                 param.Name,
                 param.Attributes,
-                ConvertHookDelegate(param.ParameterType, out _)
+                ImportSafe(param.ParameterType)
             ));
         invoke.Body = new MethodBody(invoke);
         del.Methods.Add(invoke);
@@ -123,15 +126,15 @@ public partial class ModuleWeaver
         MethodDefinition invokeBegin = new MethodDefinition(
             "BeginInvoke",
             MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.NewSlot,
-            md.ImportReference(FindTypeDefinition("System.IAsyncResult"))
+            ImportSafe(FindTypeDefinition("System.IAsyncResult"))
         )
         {
             ImplAttributes = MethodImplAttributes.Runtime | MethodImplAttributes.Managed,
             HasThis = true
         };
         foreach (ParameterDefinition param in invoke.Parameters)
-            invokeBegin.Parameters.Add(new ParameterDefinition(param.Name, param.Attributes, ConvertHookDelegate(param.ParameterType, out _)));
-        invokeBegin.Parameters.Add(new ParameterDefinition("callback", ParameterAttributes.None, md.ImportReference(FindTypeDefinition("System.AsyncCallback"))));
+            invokeBegin.Parameters.Add(new ParameterDefinition(param.Name, param.Attributes, ImportSafe(param.ParameterType)));
+        invokeBegin.Parameters.Add(new ParameterDefinition("callback", ParameterAttributes.None, ImportSafe(FindTypeDefinition("System.AsyncCallback"))));
         invokeBegin.Parameters.Add(new ParameterDefinition(null, ParameterAttributes.None, md.TypeSystem.Object));
         invokeBegin.Body = new MethodBody(invokeBegin);
         del.Methods.Add(invokeBegin);
