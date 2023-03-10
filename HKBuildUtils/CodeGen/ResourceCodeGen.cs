@@ -55,7 +55,8 @@ namespace HKBuildUtils.CodeGen.Resources
             {
                 
                 if (!context.AnalyzerConfigOptions.GetOptions(file)
-                    .TryGetValue("build_metadata.additionalfiles.modresourcesitemgroup", out var type)) continue;
+                    .TryGetValue("build_metadata.additionalfiles.modresourcesitemgroup", out var type)
+                    || string.IsNullOrEmpty(type)) continue;
 
                 var name = Path.GetFileNameWithoutExtension(file.Path);
                 var pl = Path.GetFullPath(file.Path);
@@ -88,7 +89,7 @@ namespace HKBuildUtils.CodeGen.Resources
             code.AppendLine("}");
             context.AddSource("HKBuildUtils.Resources.g.cs", code.ToString());
         }
-        [Obsolete("Incorrect resource file")]
+
         public void Initialize(GeneratorInitializationContext context)
         {
             
