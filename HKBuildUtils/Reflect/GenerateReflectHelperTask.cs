@@ -53,7 +53,7 @@ namespace HKBuildUtils.Reflect
                 foreach (var v in references)
                 {
                     var aname = Path.GetFileNameWithoutExtension(v);
-                    if (aname.Equals(asmName, StringComparison.OrdinalIgnoreCase))
+                    if (aname.Equals(asmName, StringComparison.OrdinalIgnoreCase) && File.Exists(v))
                     {
                         origAsmPath = v;
                         break;
