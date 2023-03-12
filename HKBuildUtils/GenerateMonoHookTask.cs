@@ -61,7 +61,7 @@ namespace HKBuildUtils
                         break;
                     }
                 }
-                if (string.IsNullOrEmpty(origAsmPath))
+                if (string.IsNullOrEmpty(origAsmPath) || !File.Exists(origAsmPath))
                 {
                     Log.LogWarning("Unable to find original assembly: " + asmName);
                     continue;
