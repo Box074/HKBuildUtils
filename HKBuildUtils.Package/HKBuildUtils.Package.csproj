@@ -27,6 +27,7 @@
   <ItemGroup>
     <Compile Remove="Compiler\MMHOOKCompilerHelper.cs" />
     <Compile Remove="Compiler\MonoHelper.cs" />
+    <Compile Remove="Compiler\NotSupportMod.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +43,10 @@
     <Content Include="build\HKBuildUtils.targets">
       <PackagePath>build\</PackagePath>
     </Content>
+    <Content Include="build\Platform.targets">
+      <PackagePath>build\</PackagePath>
+    </Content>
+    <Content Include="Compiler\NotSupportMod.cs" />
     <None Include="Compiler\MMHOOKCompilerHelper.cs" />
     <None Include="Compiler\MonoHelper.cs" />
   </ItemGroup>

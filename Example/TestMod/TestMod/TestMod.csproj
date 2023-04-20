@@ -20,8 +20,12 @@
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <MergeHKMirror>true</MergeHKMirror>
     <DisableLocalMods>false</DisableLocalMods>
+
+    <PlatformIsolation>true</PlatformIsolation>
+    <SupportWin>true</SupportWin>
+    <SupportLinux>false</SupportLinux>
+    <SupportOSX>true</SupportOSX>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,12 +36,15 @@
     <None Remove="build.yml" />
     <None Remove="dependabot.yml" />
     <None Remove="README.md" />
+    <None Remove="T2\TextFile1.txt" />
+    <None Remove="TextFile12.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include=".gitignore" />
     <Folder Remove="~ModLibrary" />
-    <ModResource Include="TextFile1.txt" Default="true"></ModResource>
+    <ModResource Include="T1\TextFile1.txt" Condition="$(IsWin) == true"/>
+    <ModResource Include="T2\TextFile1.txt" Condition="$(IsWin) != true"/>
 
     <ReflectHelper Include="PlayMaker" />
     <ReflectHelper Include="mscorlib" />
@@ -52,10 +59,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils" Version="0.4.45">
+    <PackageReference Include="HKBuildUtils" Version="0.5.70">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="TextFile1.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="TextFile1.txt" />
   </ItemGroup>
 </Project>

@@ -33,7 +33,7 @@ namespace TestMod
             ModLoaderR.TryAddModInstance(typeof(TestModMod), new()
             {
                 Enabled = true,
-                Mod = this,
+                Mod = this.Reflect(),
                 Name = "Test This 1"
             });
 

@@ -6,11 +6,25 @@
     <_HKBuildUtils_TaskFolder>$(_HKBuildUtils_RootFolder)analyzers\dotnet\cs\</_HKBuildUtils_TaskFolder>
     <_HKBuildUtils_TaskAssembly>$(_HKBuildUtils_TaskFolder)HKBuildUtils.Main.dll</_HKBuildUtils_TaskAssembly>
     <_HKBuildUtils_CodeFolder>$(_HKBuildUtils_RootFolder)code\</_HKBuildUtils_CodeFolder>
+    <_HKBuildUtils_TargetsFolder>$(_HKBuildUtils_RootFolder)build\</_HKBuildUtils_TargetsFolder>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     
     <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetPlatform)' == ''">
+    <TargetPlatform Condition="$([MSBuild]::IsOSPlatform('Windows'))">Windows</TargetPlatform>
+    <TargetPlatform Condition="$([MSBuild]::IsOSPlatform('Linux'))">Linux</TargetPlatform>
+    <TargetPlatform Condition="$([MSBuild]::IsOSPlatform('OSX'))">OSX</TargetPlatform>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsWin Condition="'$(TargetPlatform)' == 'Windows'">true</IsWin>
+    <IsLinux Condition="'$(TargetPlatform)' == 'Linux'">true</IsLinux>
+    <IsOSX Condition="'$(TargetPlatform)' == 'OSX'">true</IsOSX>
+
   </PropertyGroup>
 
   <UsingTask TaskName="HKBuildUtils.MergeHKMirrorTask"

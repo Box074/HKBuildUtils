@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishZipPath>$(ExportDir)\Publish-$(TargetPlatform).zip</PublishZipPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SupportCurrentPlatform Condition="$(IsWin) == true and $(SupportWin) == true">true</SupportCurrentPlatform>
+    <SupportCurrentPlatform Condition="$(IsLinux) == true and $(SupportLinux) == true">true</SupportCurrentPlatform>
+    <SupportCurrentPlatform Condition="$(IsOSX) == true and $(SupportOSX) == true">true</SupportCurrentPlatform>
+  </PropertyGroup>
+
+  <Target Name="CheckPlatform" BeforeTargets="BeforeBuild">
+    <Error
+      Text="At least one platform must be supported"
+      Condition="$(SupportWin) != true and $(SupportLinux) != true and $(SupportOSX) != true"
+      />
+
+    <PropertyGroup>
+      <_ModName Condition="'$(ModName)' != ''">$(ModName)</_ModName>
+      <_ModName Condition="'$(_ModName)' == ''">$(AssemblyTitle)</_ModName>
+      <_ModName Condition="'$(_ModName)' == ''">$(AssemblyName)</_ModName>
+      <_ModName Condition="'$(_ModName)' == ''">$(MSBuildProjectName)</_ModName>
+    </PropertyGroup>
+
+    <ItemGroup Condition="$(SupportCurrentPlatform) != true and $(DisableNotSupport) != true">
+      <Compile Remove="@(Compile)" />
+      <ModResource Remove="@(ModResource)" />
+      <EmbeddedResource Remove="@(EmbeddedResource)" />
+
+      <AssemblyMetadata Include="ModName" Value="$(_ModName)" />
+      <Compile Include="$(_HKBuildUtils_CodeFolder)NotSupportMod.cs" />
+    </ItemGroup>
+  </Target>
+  <Target Name="BuildSpecialPlatform" AfterTargets="CheckPlatform"
+          Condition="$(HKBU_IsSpecialBuild) != true"
+          >
+    <RemoveDir Directories="$(ExportDir)"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" 
+             Properties="HKBU_IsSpecialBuild=true;Configuration=$(Configuration);TargetPlatform=Windows"
+             Condition="$(IsWin) != true"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Properties="HKBU_IsSpecialBuild=true;Configuration=$(Configuration);TargetPlatform=Linux"
+             Condition="$(IsLinux) != true"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Properties="HKBU_IsSpecialBuild=true;Configuration=$(Configuration);TargetPlatform=OSX"
+             Condition="$(IsOSX) != true"/>
+
+    <PropertyGroup>
+      <HKBU_IsSpecialBuild>true</HKBU_IsSpecialBuild>
+    </PropertyGroup>
+
+    
+  </Target>
+ 
+  
+</Project>

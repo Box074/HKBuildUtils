@@ -73,8 +73,7 @@
     
     <!--MonoMod Hooks-->
     <HKBU_MMHooksReferences Include="@(MonoModHook -> '$(HKBU_BinTempPath)/MMHOOK.%(Identity).dll')" />
-    <AdditionalFiles Include="$(_HKBuildUtils_CodeFolder)MMHOOKCompilerHelper.cs" HKBU_ImportCode="true" 
-                     Condition="@(HKBU_MMHooksReferences->Count()) > 0" />
+    
     <Reference Include="@(HKBU_MMHooksReferences)" />
     <Reference Remove="@(MonoModHook-> '$(HKBU_MAPICache)/MMHOOK_%(Identity).dll')" />
     
@@ -189,8 +188,12 @@
       <HKBU_MMHOOK_RequireGenerate Include="@(HKBU_MMHooksReferences->Distinct())"/>
       <HKBU_MMHOOK_RequireGenerate Remove="@(HKBU_MMHOOK_RequireGenerate->Exists())"/>
     
-      <HKBU_RequireFody Include="@(HKBU_MMHooksReferences)" />
+      <HKBU_RequireFody Include="@(HKBU_MMHooksReferences)" /> 
+      
+      <Compile Include="$(_HKBuildUtils_CodeFolder)MMHOOKCompilerHelper.cs" 
+                     Condition="@(HKBU_MMHooksReferences->Count()) > 0" />
     </ItemGroup>
+   
     <GenerateMonoHookTask
       AllReference=";@(Reference, ';');$(HKBU_MAPICache);"
       OutFiles=";@(HKBU_MMHOOK_RequireGenerate, ';')"
@@ -214,7 +217,8 @@
 
   <Target Name="PackOutputMod" AfterTargets="PostBuildEvent">
     <PropertyGroup>
-      
+      <HKBU_UnpackDir Condition="$(HKBU_IsSpecialBuild) != true">$(ExportDir)\unpack\</HKBU_UnpackDir>
+      <HKBU_UnpackDir  Condition="$(HKBU_IsSpecialBuild) == true">$(ExportDir)\unpack-$(TargetPlatform)\</HKBU_UnpackDir>
     </PropertyGroup>
     <ItemGroup>
       <OutputFiles Include="$(TargetName).pdb;$(TargetName).dll" />
@@ -222,14 +226,14 @@
       <HKBU_OutputFiles Include="@(HKBU_OF_0 -> '$(TargetDir)\%(Identity)')" />
     </ItemGroup>
 
-    <RemoveDir Directories="$(ExportDir)" />
-    <MakeDir Directories="$(ExportDir)" />
-    <MakeDir Directories="$(ExportDir)\unpack\" />
+    <RemoveDir Directories="$(ExportDir)" Condition="$(HKBU_IsSpecialBuild) != true"/>
+    <MakeDir Directories="$(ExportDir)" Condition="$(HKBU_IsSpecialBuild) != true"/>
+    <MakeDir Directories="$(HKBU_UnpackDir)" />
     <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(ExportDir)" />
-    <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(ExportDir)\unpack\" />
-    <ZipDirectory SourceDirectory="$(ExportDir)\unpack\" DestinationFile="$(PublishZipPath)" 
+    <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(HKBU_UnpackDir)" />
+    <ZipDirectory SourceDirectory="$(HKBU_UnpackDir)" DestinationFile="$(PublishZipPath)" 
                   Overwrite="true" />
-    <RemoveDir Directories="$(ExportDir)\unpack\" />
+    <RemoveDir Directories="$(HKBU_UnpackDir)" />
     <GetFileHash Files="$(PublishZipPath)" Algorithm="SHA256">
       <Output TaskParameter="Items" ItemName="HKBU_Output_SHA256"/>
     </GetFileHash>
@@ -249,16 +253,19 @@
   </Target>-->
   <Target Name="GenerateReleaseInfoOnlySHA" AfterTargets="PackOutputMod"
           >
-
+    <PropertyGroup>
+      <HKBU_RSHA256T Condition="$(HKBU_IsSpecialBuild) != true">SHA256</HKBU_RSHA256T>
+      <HKBU_RSHA256T Condition="$(HKBU_IsSpecialBuild) == true and $(SupportCurrentPlatform) == true">$(TargetPlatform) SHA256</HKBU_RSHA256T>
+      <HKBU_RSHA256T Condition="$(HKBU_IsSpecialBuild) == true and $(SupportCurrentPlatform) != true">$(TargetPlatform) (Not supported) SHA256</HKBU_RSHA256T>
+    </PropertyGroup>
     <WriteLinesToFile File="$(ReleaseInfoPath)"
-                      Overwrite="true"
-                      Lines="SHA256: $(OutputZipSHA256)"
+                      Lines="$(HKBU_RSHA256T): $(OutputZipSHA256)"
                       Encoding="UTF-8"
                       />
   </Target>
   <Target Name="CopyToModsFolderDev" 
           AfterTargets="PackOutputMod"
-          Condition="$(HKBU_UseLocalMod) == true and '$(ModName)' != '' and '$(Configuration)' == 'Debug'"
+          Condition="$(HKBU_UseLocalMod) == true and '$(ModName)' != '' and '$(Configuration)' == 'Debug' and $(HKBU_IsSpecialBuild) != true"
           >
     <PropertyGroup>
       <HKBU_ModFolderPath>$(HKBU_LibraryModCache)\$(ModName)</HKBU_ModFolderPath>
@@ -266,5 +273,9 @@
     <MakeDir Directories="$(HKBU_ModFolderPath)" />
     <Copy SourceFiles="@(HKBU_OutputFiles)" DestinationFolder="$(HKBU_ModFolderPath)" />
   </Target>
+
+
+  <Import Project="$(_HKBuildUtils_TargetsFolder)Platform.targets"
+          Condition="$(PlatformIsolation) == true or $(MultiPlatform) == true"/>
 
 </Project>
