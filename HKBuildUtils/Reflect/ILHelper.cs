@@ -22,8 +22,8 @@ namespace HKBuildUtils.Main.Reflect
             && (member.RemoveMethod?.Resolve().IsPublic ?? true)
             && (member.DeclaringType?.Resolve()
             .IsPublic() ?? true);
-        public static readonly string InvalidChars = ".`~!@#$%^&*()_+-=[]{}<>,;:'\"|\\";
-        public static readonly string InvalidChars_GT = ".~!@#$%^&*()_+-=[]{}<>,;:'\"|\\";
+        public static readonly string InvalidChars = ".`~!@#$%^&*()+-=[]{}<>,;:'\"|\\";
+        public static readonly string InvalidChars_GT = ".~!@#$%^&*()+-=[]{}<>,;:'\"|\\";
         public static bool IsInvalidName(this string name, bool isGT = false) => (isGT? InvalidChars_GT : InvalidChars).Any(x => name.IndexOf(x) != -1);
         public static MethodDefinition? SearchMethod(this TypeDefinition type, string name)
         {
